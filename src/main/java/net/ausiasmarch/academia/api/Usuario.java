@@ -29,9 +29,9 @@ public class Usuario {
     UsuarioService oUsuarioService;
 
     @GetMapping("")
-    public ResponseEntity <Page <UsuarioEntity>> getPage(
+    public ResponseEntity<Page<UsuarioEntity>> getPage(
             Pageable oPageable,
-            @RequestParam  Optional<String> filter) {
+            @RequestParam Optional<String> filter) {
         return new ResponseEntity<Page<UsuarioEntity>>(oUsuarioService.getPage(oPageable, filter), HttpStatus.OK);
     }
 
@@ -44,6 +44,13 @@ public class Usuario {
     public ResponseEntity<Long> count() {
         return new ResponseEntity<Long>(oUsuarioService.count(), HttpStatus.OK);
     }
+
+    @PutMapping("")
+    public ResponseEntity<UsuarioEntity> create(@RequestBody UsuarioEntity oUsuarioEntity) {
+        return new ResponseEntity<UsuarioEntity>(oUsuarioService.create(oUsuarioEntity), HttpStatus.OK);
+    }
+
+    
 
 
 

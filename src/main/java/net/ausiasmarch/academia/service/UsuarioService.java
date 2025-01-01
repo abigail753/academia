@@ -34,4 +34,9 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
         return oUsuarioRepository.count();
     }
 
+    public UsuarioEntity create(UsuarioEntity oUsuarioEntity) {
+        return oUsuarioRepository.save(oUsuarioEntity);
+    }
+    
+
 }

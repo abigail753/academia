@@ -20,7 +20,7 @@ public interface ServiceInterface<T>{
 
     //public Long delete(Long id);
 
-    //public T create(T oUsuarioEntity);
+    public T create(T oUsuarioEntity);
 
     //public T update(T oUsuarioEntity);
 
