@@ -21,7 +21,15 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
     RandomService oRandomService;
 
     public Page<UsuarioEntity> getPage(Pageable oPageable, Optional<String> filter) {
+
+        if (filter.isPresent()) {
+            return oUsuarioRepository
+                    .findByNombreContainingOrApellidosContainingOrCorreoContaining(
+                            filter.get(), filter.get(), filter.get(),
+                            oPageable);
+        } else {
             return oUsuarioRepository.findAll(oPageable);
+        }
     }
 
     public UsuarioEntity get(Long id) {
