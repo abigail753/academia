@@ -28,6 +28,7 @@ public class Usuario {
     @Autowired
     UsuarioService oUsuarioService;
 
+    // Cargar
     @GetMapping("")
     public ResponseEntity<Page<UsuarioEntity>> getPage(
             Pageable oPageable,
@@ -45,12 +46,17 @@ public class Usuario {
         return new ResponseEntity<Long>(oUsuarioService.count(), HttpStatus.OK);
     }
 
+    // Crear
     @PutMapping("")
     public ResponseEntity<UsuarioEntity> create(@RequestBody UsuarioEntity oUsuarioEntity) {
         return new ResponseEntity<UsuarioEntity>(oUsuarioService.create(oUsuarioEntity), HttpStatus.OK);
     }
 
-    
+    // Eliminar
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Long> delete(@PathVariable Long id) {
+        return new ResponseEntity<Long>(oUsuarioService.delete(id), HttpStatus.OK);
+    }
 
 
 

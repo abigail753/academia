@@ -16,9 +16,9 @@ public interface ServiceInterface<T>{
 
     public T get(Long id);
 
-    //public Long count();
+    public Long count();
 
-    //public Long delete(Long id);
+    public Long delete(Long id);
 
     public T create(T oUsuarioEntity);
 

@@ -38,5 +38,9 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
         return oUsuarioRepository.save(oUsuarioEntity);
     }
     
+    public Long delete(Long id) {
+        oUsuarioRepository.deleteById(id);
+        return 1L;
+    }
 
 }
