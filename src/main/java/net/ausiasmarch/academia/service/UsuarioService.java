@@ -43,4 +43,20 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
         return 1L;
     }
 
+    public UsuarioEntity update(UsuarioEntity oUsuarioEntity) {
+        UsuarioEntity oUsuarioEntityFromDatabase = oUsuarioRepository.findById(oUsuarioEntity.getId()).get();
+        if (oUsuarioEntity.getNombre() != null) {
+            oUsuarioEntityFromDatabase.setNombre(oUsuarioEntity.getNombre());
+        }
+
+        if (oUsuarioEntity.getApellidos() != null) {
+            oUsuarioEntityFromDatabase.setApellidos(oUsuarioEntity.getApellidos());
+        }
+
+        if (oUsuarioEntity.getCorreo() != null) {
+            oUsuarioEntityFromDatabase.setCorreo(oUsuarioEntity.getCorreo());
+        }
+        return oUsuarioRepository.save(oUsuarioEntityFromDatabase);
+    }
+
 }

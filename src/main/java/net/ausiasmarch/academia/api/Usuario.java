@@ -58,6 +58,11 @@ public class Usuario {
         return new ResponseEntity<Long>(oUsuarioService.delete(id), HttpStatus.OK);
     }
 
+    // Editar
+    @PostMapping("")
+    public ResponseEntity<UsuarioEntity> update(@RequestBody UsuarioEntity oUsuarioEntity) {
+        return new ResponseEntity<UsuarioEntity>(oUsuarioService.update(oUsuarioEntity), HttpStatus.OK);
+    }
 
 
 }
