@@ -20,6 +20,26 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
     @Autowired
     RandomService oRandomService;
 
+    // Cargar datos aleatorios
+    private String[] arrNombres = {"Juan", "Sofía", "Andrea", "Claudia", "Esteban", "Julia", "Isabel", "Fernando", 
+                                  "Carlos", "Beatriz", "Pedro", "Verónica", "Alberto", "Patricia", "Diego", "Elena"};
+    
+    private String[] arrApellidos = {"Ruiz", "Alonso", "Castaño", "Molina", "Blanco", "Navarro", "Ortega", 
+                                    "Ramos", "Castro", "Domínguez", "Suárez", "Nieto", "Aguilar", "Vargas", 
+                                    "Iglesias", "Crespo", "Delgado"};
+    
+    public Long randomCreate(Long cantidad) {
+        for (int i = 0; i < cantidad; i++) {
+            UsuarioEntity oUsuarioEntity = new UsuarioEntity();
+            oUsuarioEntity.setNombre(arrNombres[oRandomService.getRandomInt(0, arrNombres.length - 1)]);
+            oUsuarioEntity.setApellidos(arrApellidos[oRandomService.getRandomInt(0, arrApellidos.length - 1)]);
+            oUsuarioEntity.setCorreo(oUsuarioEntity.getNombre() + oRandomService.getRandomInt(999, 9999) + "@gmail.com");
+            oUsuarioRepository.save(oUsuarioEntity);
+        }
+        return oUsuarioRepository.count();
+    }                                
+
+    // Cargar datos
     public Page<UsuarioEntity> getPage(Pageable oPageable, Optional<String> filter) {
 
         if (filter.isPresent()) {
@@ -38,19 +58,23 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
         // return oUsuarioRepository.findById(id).get();
     }
 
+    // Contar
     public Long count() {
         return oUsuarioRepository.count();
     }
 
+    // Crear
     public UsuarioEntity create(UsuarioEntity oUsuarioEntity) {
         return oUsuarioRepository.save(oUsuarioEntity);
     }
-    
+
+    // Eliminar
     public Long delete(Long id) {
         oUsuarioRepository.deleteById(id);
         return 1L;
     }
 
+    // Actualizar
     public UsuarioEntity update(UsuarioEntity oUsuarioEntity) {
         UsuarioEntity oUsuarioEntityFromDatabase = oUsuarioRepository.findById(oUsuarioEntity.getId()).get();
         if (oUsuarioEntity.getNombre() != null) {

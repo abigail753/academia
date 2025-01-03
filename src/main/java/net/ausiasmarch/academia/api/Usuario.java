@@ -28,6 +28,12 @@ public class Usuario {
     @Autowired
     UsuarioService oUsuarioService;
 
+    // Random
+    @PutMapping("/random/{cantidad}")
+    public ResponseEntity<Long> create(@PathVariable Long cantidad) {
+        return new ResponseEntity<Long>(oUsuarioService.randomCreate(cantidad), HttpStatus.OK);
+    }
+
     // Cargar
     @GetMapping("")
     public ResponseEntity<Page<UsuarioEntity>> getPage(

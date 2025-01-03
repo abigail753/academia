@@ -28,7 +28,7 @@ public class UsuarioEntity {
     @Email
     private String correo;
 
-    UsuarioEntity(){
+    public UsuarioEntity(){
     }
 
     public UsuarioEntity(String nombre, String apellidos, String correo) {
