@@ -58,7 +58,7 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
         if (filter.isPresent()) {
             return oExamenRepository
                     .findByNombreContaining(
-                            filter.get(), filter.get(), oPageable);
+                            filter.get(), oPageable);
         } else {
             return oExamenRepository.findAll(oPageable);
         }

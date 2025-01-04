@@ -8,5 +8,5 @@ import net.ausiasmarch.academia.entity.ExamenEntity;
 
 public interface ExamenRepository extends JpaRepository<ExamenEntity, Long> {
     Page<ExamenEntity> findByNombreContaining (
-        String filter2, String filter3, Pageable oPageable);
+        String filter2, Pageable oPageable);
 }
