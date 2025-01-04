@@ -18,58 +18,58 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.ausiasmarch.academia.entity.CursoEntity;
-import net.ausiasmarch.academia.service.CursoService;
+import net.ausiasmarch.academia.entity.InscripcionEntity;
+import net.ausiasmarch.academia.service.InscripcionService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/curso")
-public class Curso {
+@RequestMapping("/inscripcion")
+public class Inscripcion {
     
     @Autowired
-    CursoService oCursoService;
+    InscripcionService oInscripcionService;
 
     // Random
     @PutMapping("/random/{cantidad}")
     public ResponseEntity<Long> create(@PathVariable Long cantidad) {
-        return new ResponseEntity<Long>(oCursoService.randomCreate(cantidad), HttpStatus.OK);
+        return new ResponseEntity<Long>(oInscripcionService.randomCreate(cantidad), HttpStatus.OK);
     }
 
     // Cargar
     @GetMapping("")
-    public ResponseEntity<Page<CursoEntity>> getPage(
+    public ResponseEntity<Page<InscripcionEntity>> getPage(
             Pageable oPageable,
             @RequestParam Optional<String> filter) {
-        return new ResponseEntity<Page<CursoEntity>>(oCursoService.getPage(oPageable, filter), HttpStatus.OK);
+        return new ResponseEntity<Page<InscripcionEntity>>(oInscripcionService.getPage(oPageable, filter), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CursoEntity> getCurso(@PathVariable Long id) {
-        return new ResponseEntity<CursoEntity>(oCursoService.get(id), HttpStatus.OK);
+    public ResponseEntity<InscripcionEntity> getInscripcion(@PathVariable Long id) {
+        return new ResponseEntity<InscripcionEntity>(oInscripcionService.get(id), HttpStatus.OK);
     }
 
     // Contar
     @GetMapping("/count")
     public ResponseEntity<Long> count() {
-        return new ResponseEntity<Long>(oCursoService.count(), HttpStatus.OK);
+        return new ResponseEntity<Long>(oInscripcionService.count(), HttpStatus.OK);
     }
 
     // Crear
     @PutMapping("")
-    public ResponseEntity<CursoEntity> create(@RequestBody CursoEntity oCursoEntity) {
-        return new ResponseEntity<CursoEntity>(oCursoService.create(oCursoEntity), HttpStatus.OK);
+    public ResponseEntity<InscripcionEntity> create(@RequestBody InscripcionEntity oInscripcionEntity) {
+        return new ResponseEntity<InscripcionEntity>(oInscripcionService.create(oInscripcionEntity), HttpStatus.OK);
     }
 
     // Editar
     @PostMapping("")
-    public ResponseEntity<CursoEntity> update(@RequestBody CursoEntity oCursoEntity) {
-        return new ResponseEntity<CursoEntity>(oCursoService.update(oCursoEntity), HttpStatus.OK);
+    public ResponseEntity<InscripcionEntity> update(@RequestBody InscripcionEntity oInscripcionEntity) {
+        return new ResponseEntity<InscripcionEntity>(oInscripcionService.update(oInscripcionEntity), HttpStatus.OK);
     }
 
     // Eliminar
     @DeleteMapping("/{id}")
     public ResponseEntity<Long> delete(@PathVariable Long id) {
-        return new ResponseEntity<Long>(oCursoService.delete(id), HttpStatus.OK);
+        return new ResponseEntity<Long>(oInscripcionService.delete(id), HttpStatus.OK);
     }
 
 }
