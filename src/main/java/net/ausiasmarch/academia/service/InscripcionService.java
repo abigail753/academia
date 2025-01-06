@@ -55,7 +55,7 @@ public class InscripcionService implements ServiceInterface<InscripcionEntity> {
 
         if (id_usuario.isPresent()) {
             return oInscripcionRepository
-                    .findByUsuarioIdContaining(id_usuario.get(), oPageable);
+                    .findByUsuarioId(id_usuario.get(), oPageable);
         } else {
             throw new ResourceNotFoundException("Usuario no encontrado");
         }
@@ -63,11 +63,11 @@ public class InscripcionService implements ServiceInterface<InscripcionEntity> {
 
     // Cargar datos - Curso
     public Page<InscripcionEntity> getPageXCurso(Pageable oPageable, Optional<String> filter,
-            Optional<Long> id_usuario) {
+            Optional<Long> id_curso) {
 
-        if (id_usuario.isPresent()) {
+        if (id_curso.isPresent()) {
             return oInscripcionRepository
-                    .findByUsuarioIdContaining(id_usuario.get(), oPageable);
+                    .findByCursoId(id_curso.get(), oPageable);
         } else {
             throw new ResourceNotFoundException("Usuario no encontrado");
         }

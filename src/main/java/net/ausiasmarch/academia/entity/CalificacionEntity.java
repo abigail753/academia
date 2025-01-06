@@ -37,9 +37,6 @@ public class CalificacionEntity {
     @NotNull
     private Long id_examen;
 
-    @OneToMany(mappedBy = "calificacion", fetch = FetchType.LAZY)
-    private java.util.List<TemaEntity> temas;
-
     public CalificacionEntity() {
     }
 

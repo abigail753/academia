@@ -19,6 +19,12 @@ public class TemaService implements ServiceInterface<TemaEntity> {
     @Autowired
     RandomService oRandomService;
 
+    @Autowired
+    CursoService oCursoService;
+
+    @Autowired
+    CalificacionService oCalificacionService;
+
     private String[] arrTitulo = {
         "Matemáticas Básicas",
         "Historia Mundial",
@@ -49,17 +55,19 @@ public class TemaService implements ServiceInterface<TemaEntity> {
     public Long randomCreate(Long cantidad) {
         for (int i = 0; i < cantidad; i++) {
             TemaEntity oTemaEntity = new TemaEntity();
+            
             oTemaEntity.setTitulo(arrTitulo[oRandomService.getRandomInt(0, arrTitulo.length - 1)]);
+            
             oTemaEntity.setDescripcion(arrDescripcion[oRandomService.getRandomInt(0, arrDescripcion.length - 1)]);
-            oTemaEntity.setId_curso((long) oRandomService.getRandomInt(1,10));
-            oTemaEntity.setId_calificacion((long) oRandomService.getRandomInt(1,10));
+            
+            oTemaEntity.setCurso(oCursoService.randomSelection());
             
             oTemaRepository.save(oTemaEntity);
         }
         return oTemaRepository.count();
     } 
 
-    // Cargar datos
+    // Cargar datos - Tema
     public Page<TemaEntity> getPage(Pageable oPageable, Optional<String> filter) {
 
         if (filter.isPresent()) {
@@ -75,6 +83,18 @@ public class TemaService implements ServiceInterface<TemaEntity> {
     public TemaEntity get(Long id) {
         return oTemaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tema no encontrado"));
+    }
+
+    // Cargar datos - Curso
+    public Page<TemaEntity> getPageXCurso(Pageable oPageable, Optional<String> filter,
+            Optional<Long> id_curso) {
+
+        if (id_curso.isPresent()) {
+            return oTemaRepository
+                    .findByCursoId(id_curso.get(), oPageable);
+        } else {
+            throw new ResourceNotFoundException("Usuario no encontrado");
+        }
     }
 
     // Contar
@@ -104,12 +124,8 @@ public class TemaService implements ServiceInterface<TemaEntity> {
             oTemaEntityFromDatabase.setDescripcion(oTemaEntity.getDescripcion());
         }
 
-        if (oTemaEntity.getId_curso() != null) {
-            oTemaEntityFromDatabase.setId_curso(oTemaEntity.getId_curso());
-        }
-
-        if (oTemaEntity.getId_calificacion() != null) {
-            oTemaEntityFromDatabase.setId_calificacion(oTemaEntity.getId_calificacion());
+        if (oTemaEntity.getCurso() != null) {
+            oTemaEntityFromDatabase.setCurso(oTemaEntity.getCurso());
         }
 
         return oTemaRepository.save(oTemaEntityFromDatabase);

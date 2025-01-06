@@ -25,6 +25,7 @@ import net.ausiasmarch.academia.service.TemaService;
 @RestController
 @RequestMapping("/tema")
 public class Tema {
+    
     @Autowired
     TemaService oTemaService;
 
@@ -34,7 +35,7 @@ public class Tema {
         return new ResponseEntity<Long>(oTemaService.randomCreate(cantidad), HttpStatus.OK);
     }
 
-    // Cargar
+    // Cargar Page
     @GetMapping("")
     public ResponseEntity<Page<TemaEntity>> getPage(
             Pageable oPageable,
@@ -42,6 +43,16 @@ public class Tema {
         return new ResponseEntity<Page<TemaEntity>>(oTemaService.getPage(oPageable, filter), HttpStatus.OK);
     }
 
+    @GetMapping("/xcurso/{id}")
+    public ResponseEntity<Page<TemaEntity>> getPageXUsuario(
+            Pageable oPageable,
+            @RequestParam Optional<String> filter,
+            @PathVariable Optional<Long> id) {
+        return new ResponseEntity<Page<TemaEntity>>(oTemaService.getPageXCurso(oPageable, filter, id),
+                HttpStatus.OK);
+    }
+
+    // Cargar un tema
     @GetMapping("/{id}")
     public ResponseEntity<TemaEntity> getTema(@PathVariable Long id) {
         return new ResponseEntity<TemaEntity>(oTemaService.get(id), HttpStatus.OK);

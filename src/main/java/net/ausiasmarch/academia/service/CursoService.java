@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.academia.entity.CursoEntity;
-import net.ausiasmarch.academia.entity.UsuarioEntity;
 import net.ausiasmarch.academia.exception.ResourceNotFoundException;
 import net.ausiasmarch.academia.repository.CursoRepository;
 

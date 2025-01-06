@@ -107,4 +107,9 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
         oCalificacionRepository.deleteById(id);
         return 1L;
     }
+
+    // Random Selection
+    public CalificacionEntity randomSelection() {
+        return oCalificacionRepository.findById((long) oRandomService.getRandomInt(1, (int) (long) this.count())).get();
+    }
 }
