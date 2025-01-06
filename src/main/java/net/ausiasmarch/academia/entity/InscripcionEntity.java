@@ -4,8 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+
 
 @Entity
 @Table (name="inscripcion")
@@ -15,24 +18,28 @@ public class InscripcionEntity {
     private Long id;
 
     @NotNull
-    private Long id_usuario;
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
+    @JoinColumn(name = "id_usuario")
+    private UsuarioEntity usuario;
 
     @NotNull
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
+    @JoinColumn(name = "id_curso")
+    private CursoEntity curso;
     
-    private Long id_curso;
 
     public InscripcionEntity() {
     }
 
-    public InscripcionEntity(Long id_usuario, Long id_curso) {
-        this.id_usuario = id_usuario;
-        this.id_curso = id_curso;
+    public InscripcionEntity(UsuarioEntity id_usuario, CursoEntity id_curso) {
+        this.usuario = id_usuario;
+        this.curso = id_curso;
     }
 
-    public InscripcionEntity(Long id, Long id_usuario, Long id_curso) {
+    public InscripcionEntity(Long id, UsuarioEntity id_usuario, CursoEntity id_curso) {
         this.id = id;
-        this.id_usuario = id_usuario;
-        this.id_curso = id_curso;
+        this.usuario = id_usuario;
+        this.curso = id_curso;
     }
 
     public Long getId() {
@@ -43,19 +50,20 @@ public class InscripcionEntity {
         this.id = id;
     }
 
-    public Long getId_usuario() {
-        return id_usuario;
+    public UsuarioEntity getUsuario() {
+        return usuario;
     }
 
-    public void setId_usuario(Long id_usuario) {
-        this.id_usuario = id_usuario;
+    public void setUsuario(UsuarioEntity id_usuario) {
+        this.usuario = id_usuario;
     }
 
-    public Long getId_curso() {
-        return id_curso;
+    public CursoEntity getCurso() {
+        return curso;
     }
 
-    public void setId_curso(Long id_curso) {
-        this.id_curso = id_curso;
+    public void setCurso(CursoEntity id_curso) {
+        this.curso = id_curso;
     }
+
 }

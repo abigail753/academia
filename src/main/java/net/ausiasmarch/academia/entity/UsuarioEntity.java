@@ -1,16 +1,18 @@
 package net.ausiasmarch.academia.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id; 
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table (name="usuario")
+@Table(name = "usuario")
 public class UsuarioEntity {
 
     @Id
@@ -28,7 +30,10 @@ public class UsuarioEntity {
     @Email
     private String correo;
 
-    public UsuarioEntity(){
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private java.util.List<InscripcionEntity> inscripciones;
+
+    public UsuarioEntity() {
     }
 
     public UsuarioEntity(String nombre, String apellidos, String correo) {
@@ -75,6 +80,9 @@ public class UsuarioEntity {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-    
+
+    public int getInscripciones() {
+        return inscripciones.size();
+    }
 
 }
