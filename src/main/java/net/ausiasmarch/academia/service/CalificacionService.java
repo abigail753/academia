@@ -53,6 +53,8 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
 
             oCalificacionEntity.setId_examen((long) oRandomService.getRandomInt(1, 10));
 
+            oCalificacionEntity.setId_tema((long) oRandomService.getRandomInt(1, 10));
+
             oCalificacionRepository.save(oCalificacionEntity);
         }
         return oCalificacionRepository.count();
@@ -97,6 +99,10 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
 
         if (oCalificacionEntity.getId_examen() != null) {
             oCalificacionEntityFromDatabase.setId_examen(oCalificacionEntity.getId_examen());
+        }
+
+        if (oCalificacionEntity.getId_tema() != null) {
+            oCalificacionEntityFromDatabase.setId_tema(oCalificacionEntity.getId_tema());
         }
 
         return oCalificacionRepository.save(oCalificacionEntityFromDatabase);

@@ -37,23 +37,29 @@ public class CalificacionEntity {
     @NotNull
     private Long id_examen;
 
+    @NotNull
+    private Long id_tema;
+
     public CalificacionEntity() {
     }
 
-    public CalificacionEntity(BigDecimal calificacion, LocalDate fecha_evaluacion, Long id_usuario, Long id_examen) {
+    public CalificacionEntity(BigDecimal calificacion, LocalDate fecha_evaluacion, Long id_usuario, Long id_examen,
+            Long id_tema) {
         this.calificacion = calificacion;
         this.fecha_evaluacion = fecha_evaluacion;
         this.id_usuario = id_usuario;
         this.id_examen = id_examen;
+        this.id_tema = id_tema;
     }
 
     public CalificacionEntity(Long id, BigDecimal calificacion, LocalDate fecha_evaluacion, Long id_usuario,
-            Long id_examen) {
+            Long id_examen, Long id_tema) {
         this.id = id;
         this.calificacion = calificacion;
         this.fecha_evaluacion = fecha_evaluacion;
         this.id_usuario = id_usuario;
         this.id_examen = id_examen;
+        this.id_tema = id_tema;
     }
 
     public Long getId() {
@@ -96,8 +102,12 @@ public class CalificacionEntity {
         this.id_examen = id_examen;
     }
 
-    public int getTemas() {
-        return temas.size();
+    public Long getId_tema() {    
+        return id_tema;
+    }
+
+    public void setId_tema(Long id_tema) {
+        this.id_tema = id_tema;
     }
 
 }
