@@ -32,6 +32,9 @@ public class CursoEntity {
 
     @OneToMany(mappedBy = "curso", fetch = FetchType.LAZY)
     private java.util.List<InscripcionEntity> inscripciones;
+    
+    @OneToMany(mappedBy = "curso", fetch = FetchType.LAZY)
+    private java.util.List<TemaEntity> temas;
 
     public CursoEntity() {
     }
@@ -84,6 +87,10 @@ public class CursoEntity {
 
     public int getInscripciones() {
         return inscripciones.size();
+    }
+
+    public int getTemas() {
+        return temas.size();
     }
 
 }

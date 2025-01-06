@@ -6,9 +6,11 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
@@ -34,6 +36,9 @@ public class CalificacionEntity {
 
     @NotNull
     private Long id_examen;
+
+    @OneToMany(mappedBy = "calificacion", fetch = FetchType.LAZY)
+    private java.util.List<TemaEntity> temas;
 
     public CalificacionEntity() {
     }
@@ -92,6 +97,10 @@ public class CalificacionEntity {
 
     public void setId_examen(Long id_examen) {
         this.id_examen = id_examen;
+    }
+
+    public int getTemas() {
+        return temas.size();
     }
 
 }
