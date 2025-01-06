@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.academia.entity.CursoEntity;
+import net.ausiasmarch.academia.entity.UsuarioEntity;
 import net.ausiasmarch.academia.exception.ResourceNotFoundException;
 import net.ausiasmarch.academia.repository.CursoRepository;
 
@@ -108,5 +109,10 @@ public class CursoService implements ServiceInterface<CursoEntity> {
     public Long delete(Long id) {
         oCursoRepository.deleteById(id);
         return 1L;
+    }
+
+    // Random Selection
+    public CursoEntity randomSelection() {
+        return oCursoRepository.findById((long) oRandomService.getRandomInt(1, (int) (long) this.count())).get();
     }
 }

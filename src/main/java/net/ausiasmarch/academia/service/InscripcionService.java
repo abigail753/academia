@@ -20,26 +20,58 @@ public class InscripcionService implements ServiceInterface<InscripcionEntity> {
     @Autowired
     RandomService oRandomService;
 
+    @Autowired
+    UsuarioService oUsuarioService;
+
+    @Autowired
+    CursoService oCursoService;
+
     public Long randomCreate(Long cantidad) {
-         for (int i = 0; i < cantidad; i++) {
+        for (int i = 0; i < cantidad; i++) {
             InscripcionEntity oInscripcionEntity = new InscripcionEntity();
 
-            oInscripcionEntity.setId_usuario((long) oRandomService.getRandomInt(1,10));
-            oInscripcionEntity.setId_curso((long) oRandomService.getRandomInt(1,10));
+            oInscripcionEntity.setUsuario(oUsuarioService.randomSelection());
+
+            oInscripcionEntity.setCurso(oCursoService.randomSelection());
 
             oInscripcionRepository.save(oInscripcionEntity);
         }
         return oInscripcionRepository.count();
     }
 
-    // Cargar datos
+    // Cargar datos - Inscripcion
     public Page<InscripcionEntity> getPage(Pageable oPageable, Optional<String> filter) {
-            return oInscripcionRepository.findAll(oPageable);
+        return oInscripcionRepository.findAll(oPageable);
     }
 
     public InscripcionEntity get(Long id) {
         return oInscripcionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Inscripcion no encontrada"));    }
+                .orElseThrow(() -> new ResourceNotFoundException("Inscripcion no encontrada"));
+    }
+
+    // Cargar datos - Usuario
+    public Page<InscripcionEntity> getPageXUsuario(Pageable oPageable, Optional<String> filter,
+            Optional<Long> id_usuario) {
+
+        if (id_usuario.isPresent()) {
+            return oInscripcionRepository
+                    .findByUsuarioIdContaining(id_usuario.get(), oPageable);
+        } else {
+            throw new ResourceNotFoundException("Usuario no encontrado");
+        }
+    }
+
+    // Cargar datos - Curso
+    public Page<InscripcionEntity> getPageXCurso(Pageable oPageable, Optional<String> filter,
+            Optional<Long> id_usuario) {
+
+        if (id_usuario.isPresent()) {
+            return oInscripcionRepository
+                    .findByUsuarioIdContaining(id_usuario.get(), oPageable);
+        } else {
+            throw new ResourceNotFoundException("Usuario no encontrado");
+        }
+    }
 
     // Contar
     public Long count() {
@@ -54,12 +86,13 @@ public class InscripcionService implements ServiceInterface<InscripcionEntity> {
     // Actualizar
     public InscripcionEntity update(InscripcionEntity oInscripcionEntity) {
         InscripcionEntity oInscripcionEntityFromDatabase = oInscripcionRepository.findById(oInscripcionEntity.getId()).get();
-        if (oInscripcionEntity.getId_usuario() != null) {
-            oInscripcionEntityFromDatabase.setId_usuario(oInscripcionEntity.getId_usuario());
+        
+        if (oInscripcionEntity.getUsuario() != null) {
+        oInscripcionEntityFromDatabase.setUsuario(oUsuarioService.get(oUsuarioService.randomSelection().getId()));
         }
 
-        if (oInscripcionEntity.getId_curso() != null) {
-            oInscripcionEntityFromDatabase.setId_curso(oInscripcionEntity.getId_curso());
+        if (oInscripcionEntity.getCurso() != null) {
+            oInscripcionEntityFromDatabase.setCurso(oInscripcionEntity.getCurso());
         }
 
         return oInscripcionRepository.save(oInscripcionEntityFromDatabase);

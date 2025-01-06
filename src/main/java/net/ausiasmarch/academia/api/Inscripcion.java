@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import net.ausiasmarch.academia.entity.InscripcionEntity;
 import net.ausiasmarch.academia.service.InscripcionService;
 
@@ -35,7 +36,7 @@ public class Inscripcion {
         return new ResponseEntity<Long>(oInscripcionService.randomCreate(cantidad), HttpStatus.OK);
     }
 
-    // Cargar
+    // Cargar Page
     @GetMapping("")
     public ResponseEntity<Page<InscripcionEntity>> getPage(
             Pageable oPageable,
@@ -43,6 +44,25 @@ public class Inscripcion {
         return new ResponseEntity<Page<InscripcionEntity>>(oInscripcionService.getPage(oPageable, filter), HttpStatus.OK);
     }
 
+    @GetMapping("/xusuario/{id}")
+    public ResponseEntity<Page<InscripcionEntity>> getPageXUsuario(
+            Pageable oPageable,
+            @RequestParam Optional<String> filter,
+            @PathVariable Optional<Long> id) {
+        return new ResponseEntity<Page<InscripcionEntity>>(oInscripcionService.getPageXUsuario(oPageable, filter, id),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/xcurso/{id}")
+    public ResponseEntity<Page<InscripcionEntity>> getPageXCurso(
+            Pageable oPageable,
+            @RequestParam Optional<String> filter,
+            @PathVariable Optional<Long> id) {
+        return new ResponseEntity<Page<InscripcionEntity>>(oInscripcionService.getPageXCurso(oPageable, filter, id),
+                HttpStatus.OK);
+    }
+
+    // Cargar un usuario
     @GetMapping("/{id}")
     public ResponseEntity<InscripcionEntity> getInscripcion(@PathVariable Long id) {
         return new ResponseEntity<InscripcionEntity>(oInscripcionService.get(id), HttpStatus.OK);

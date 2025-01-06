@@ -91,4 +91,9 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
         return oUsuarioRepository.save(oUsuarioEntityFromDatabase);
     }
 
+    // Random Selection
+    public UsuarioEntity randomSelection() {
+        return oUsuarioRepository.findById((long) oRandomService.getRandomInt(1, (int) (long) this.count())).get();
+    }
+
 }
