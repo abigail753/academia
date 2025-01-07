@@ -22,6 +22,15 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
     @Autowired
     RandomService oRandomService;
 
+    @Autowired
+    UsuarioService oUsuarioService;
+
+    @Autowired
+    ExamenService oExamenService;
+
+    @Autowired
+    TemaService oTemaService;
+
     private BigDecimal[] arrCalificaciones = {
             new BigDecimal("5.0"),
             new BigDecimal("4.5"),
@@ -49,22 +58,59 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
 
             oCalificacionEntity.setFecha_evaluacion(arrFechas[oRandomService.getRandomInt(0, arrFechas.length - 1)]);
 
-            oCalificacionEntity.setId_usuario((long) oRandomService.getRandomInt(1, 10));
+            oCalificacionEntity.setUsuario(oUsuarioService.randomSelection());
 
-            oCalificacionEntity.setId_examen((long) oRandomService.getRandomInt(1, 10));
+            oCalificacionEntity.setExamen(oExamenService.randomSelection());
 
-            oCalificacionEntity.setId_tema((long) oRandomService.getRandomInt(1, 10));
+            oCalificacionEntity.setTema(oTemaService.randomSelection());
 
             oCalificacionRepository.save(oCalificacionEntity);
         }
         return oCalificacionRepository.count();
     }
 
-    // Cargar datos
+    // Cargar datos - Calificacion
     public Page<CalificacionEntity> getPage(Pageable oPageable, Optional<String> filter) {
         return oCalificacionRepository.findAll(oPageable);
     }
 
+    // Cargar datos - Usuario
+    public Page<CalificacionEntity> getPageXUsuario(Pageable oPageable, Optional<String> filter,
+            Optional<Long> id_usuario) {
+
+        if (id_usuario.isPresent()) {
+            return oCalificacionRepository
+                    .findByUsuarioId(id_usuario.get(), oPageable);
+        } else {
+            throw new ResourceNotFoundException("Usuario no encontrado");
+        }
+    }
+
+    // Cargar datos - Examen
+    public Page<CalificacionEntity> getPageXExamen(Pageable oPageable, Optional<String> filter,
+            Optional<Long> id_examen) {
+
+        if (id_examen.isPresent()) {
+            return oCalificacionRepository
+                    .findByExamenId(id_examen.get(), oPageable);
+        } else {
+            throw new ResourceNotFoundException("Examen no encontrado");
+        }
+    }
+
+    // Cargar datos - Tema
+    public Page<CalificacionEntity> getPageXTema(Pageable oPageable, Optional<String> filter,
+            Optional<Long> id_tema) {
+
+        if (id_tema.isPresent()) {
+            return oCalificacionRepository
+                    .findByTemaId(id_tema.get(), oPageable);
+        } else {
+            throw new ResourceNotFoundException("Tema no encontrado");
+        }
+    }
+
+    // Cargar datos - Calificacion
     public CalificacionEntity get(Long id) {
         return oCalificacionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Calificacion no encontrada"));
@@ -93,16 +139,16 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
             oCalificacionEntityFromDatabase.setFecha_evaluacion(oCalificacionEntity.getFecha_evaluacion());
         }
 
-        if (oCalificacionEntity.getId_usuario() != null) {
-            oCalificacionEntityFromDatabase.setId_usuario(oCalificacionEntity.getId_usuario());
+        if (oCalificacionEntity.getUsuario() != null) {
+            oCalificacionEntityFromDatabase.setUsuario(oUsuarioService.get(oUsuarioService.randomSelection().getId()));
         }
 
-        if (oCalificacionEntity.getId_examen() != null) {
-            oCalificacionEntityFromDatabase.setId_examen(oCalificacionEntity.getId_examen());
+        if (oCalificacionEntity.getExamen() != null) {
+            oCalificacionEntityFromDatabase.setExamen(oExamenService.get(oUsuarioService.randomSelection().getId()));
         }
 
-        if (oCalificacionEntity.getId_tema() != null) {
-            oCalificacionEntityFromDatabase.setId_tema(oCalificacionEntity.getId_tema());
+        if (oCalificacionEntity.getTema() != null) {
+            oCalificacionEntityFromDatabase.setTema(oTemaService.get(oUsuarioService.randomSelection().getId()));
         }
 
         return oCalificacionRepository.save(oCalificacionEntityFromDatabase);

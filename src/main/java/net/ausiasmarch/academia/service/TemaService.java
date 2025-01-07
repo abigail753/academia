@@ -22,9 +22,6 @@ public class TemaService implements ServiceInterface<TemaEntity> {
     @Autowired
     CursoService oCursoService;
 
-    @Autowired
-    CalificacionService oCalificacionService;
-
     private String[] arrTitulo = {
         "Matemáticas Básicas",
         "Historia Mundial",
@@ -129,6 +126,11 @@ public class TemaService implements ServiceInterface<TemaEntity> {
         }
 
         return oTemaRepository.save(oTemaEntityFromDatabase);
+    }
+
+    // Random Selection
+    public TemaEntity randomSelection() {
+        return oTemaRepository.findById((long) oRandomService.getRandomInt(1, (int) (long) this.count())).get();
     }
 
 }

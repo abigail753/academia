@@ -99,4 +99,9 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
         return oExamenRepository.save(oExamenEntityFromDatabase);
     }
 
+    // Random Selection
+    public ExamenEntity randomSelection() {
+        return oExamenRepository.findById((long) oRandomService.getRandomInt(1, (int) (long) this.count())).get();
+    }
+
 }

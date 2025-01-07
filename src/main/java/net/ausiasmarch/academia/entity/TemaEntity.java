@@ -1,11 +1,13 @@
 package net.ausiasmarch.academia.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -30,6 +32,9 @@ public class TemaEntity {
     @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "id_curso")
     private CursoEntity curso;
+
+    @OneToMany(mappedBy = "tema", fetch = FetchType.LAZY)
+    private java.util.List<CalificacionEntity> calificaciones;
 
     public TemaEntity() {
     }
@@ -77,6 +82,10 @@ public class TemaEntity {
 
     public void setCurso(CursoEntity curso) {
         this.curso = curso;
+    }
+
+    public int getCalificaciones() {
+        return calificaciones.size();
     }
 
 }

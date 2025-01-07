@@ -33,6 +33,9 @@ public class UsuarioEntity {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private java.util.List<InscripcionEntity> inscripciones;
 
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private java.util.List<CalificacionEntity> calificaciones;
+
     public UsuarioEntity() {
     }
 
@@ -83,6 +86,10 @@ public class UsuarioEntity {
 
     public int getInscripciones() {
         return inscripciones.size();
+    }
+
+    public int getCalificaciones() {
+        return calificaciones.size();
     }
 
 }

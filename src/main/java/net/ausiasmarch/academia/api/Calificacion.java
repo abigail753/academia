@@ -34,7 +34,7 @@ public class Calificacion {
         return new ResponseEntity<Long>(oCalificacionService.randomCreate(cantidad), HttpStatus.OK);
     }
 
-    // Cargar
+    // Cargar Page
     @GetMapping("")
     public ResponseEntity<Page<CalificacionEntity>> getPage(
             Pageable oPageable,
@@ -42,6 +42,34 @@ public class Calificacion {
         return new ResponseEntity<Page<CalificacionEntity>>(oCalificacionService.getPage(oPageable, filter), HttpStatus.OK);
     }
 
+    @GetMapping("/xusuario/{id}")
+    public ResponseEntity<Page<CalificacionEntity>> getPageXUsuario(
+            Pageable oPageable,
+            @RequestParam Optional<String> filter,
+            @PathVariable Optional<Long> id) {
+        return new ResponseEntity<Page<CalificacionEntity>>(oCalificacionService.getPageXUsuario(oPageable, filter, id),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/xexamen/{id}")
+    public ResponseEntity<Page<CalificacionEntity>> getPageXExamen(
+            Pageable oPageable,
+            @RequestParam Optional<String> filter,
+            @PathVariable Optional<Long> id) {
+        return new ResponseEntity<Page<CalificacionEntity>>(oCalificacionService.getPageXExamen(oPageable, filter, id),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/xtema/{id}")
+    public ResponseEntity<Page<CalificacionEntity>> getPageXTema(
+            Pageable oPageable,
+            @RequestParam Optional<String> filter,
+            @PathVariable Optional<Long> id) {
+        return new ResponseEntity<Page<CalificacionEntity>>(oCalificacionService.getPageXExamen(oPageable, filter, id),
+                HttpStatus.OK);
+    }
+
+    // Cargar un Usuario
     @GetMapping("/{id}")
     public ResponseEntity<CalificacionEntity> getCalificacion(@PathVariable Long id) {
         return new ResponseEntity<CalificacionEntity>(oCalificacionService.get(id), HttpStatus.OK);

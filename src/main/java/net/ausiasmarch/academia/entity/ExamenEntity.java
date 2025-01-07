@@ -1,9 +1,11 @@
 package net.ausiasmarch.academia.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id; 
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -22,6 +24,9 @@ public class ExamenEntity {
 
     @NotNull
     private Long num_preguntas;
+
+    @OneToMany(mappedBy = "examen", fetch = FetchType.LAZY)
+    private java.util.List<CalificacionEntity> calificaciones;
 
     public ExamenEntity(){
     }
@@ -61,5 +66,8 @@ public class ExamenEntity {
         this.num_preguntas = num_preguntas;
     }
     
+    public int getCalificaciones() {
+        return calificaciones.size();
+    }
 
 }

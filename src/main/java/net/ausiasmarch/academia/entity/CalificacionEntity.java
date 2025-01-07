@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
@@ -30,34 +32,40 @@ public class CalificacionEntity {
     private LocalDate fecha_evaluacion;
 
     @NotNull
-    private Long id_usuario;
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
+    @JoinColumn(name = "id_usuario")
+    private UsuarioEntity usuario;
 
     @NotNull
-    private Long id_examen;
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
+    @JoinColumn(name = "id_examen")
+    private ExamenEntity examen;
 
     @NotNull
-    private Long id_tema;
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
+    @JoinColumn(name = "id_tema")
+    private TemaEntity tema;
 
     public CalificacionEntity() {
     }
 
-    public CalificacionEntity(BigDecimal calificacion, LocalDate fecha_evaluacion, Long id_usuario, Long id_examen,
-            Long id_tema) {
+    public CalificacionEntity(BigDecimal calificacion, LocalDate fecha_evaluacion, UsuarioEntity usuario,
+            ExamenEntity examen, TemaEntity tema) {
         this.calificacion = calificacion;
         this.fecha_evaluacion = fecha_evaluacion;
-        this.id_usuario = id_usuario;
-        this.id_examen = id_examen;
-        this.id_tema = id_tema;
+        this.usuario = usuario;
+        this.examen = examen;
+        this.tema = tema;
     }
 
-    public CalificacionEntity(Long id, BigDecimal calificacion, LocalDate fecha_evaluacion, Long id_usuario,
-            Long id_examen, Long id_tema) {
+    public CalificacionEntity(Long id, BigDecimal calificacion, LocalDate fecha_evaluacion, UsuarioEntity usuario,
+            ExamenEntity examen, TemaEntity tema) {
         this.id = id;
         this.calificacion = calificacion;
         this.fecha_evaluacion = fecha_evaluacion;
-        this.id_usuario = id_usuario;
-        this.id_examen = id_examen;
-        this.id_tema = id_tema;
+        this.usuario = usuario;
+        this.examen = examen;
+        this.tema = tema;
     }
 
     public Long getId() {
@@ -84,28 +92,29 @@ public class CalificacionEntity {
         this.fecha_evaluacion = fecha_evaluacion;
     }
 
-    public Long getId_usuario() {
-        return id_usuario;
+    public UsuarioEntity getUsuario() {
+        return usuario;
     }
 
-    public void setId_usuario(Long id_usuario) {
-        this.id_usuario = id_usuario;
+    public void setUsuario(UsuarioEntity usuario) {
+        this.usuario = usuario;
     }
 
-    public Long getId_examen() {
-        return id_examen;
+    public ExamenEntity getExamen() {
+        return examen;
     }
 
-    public void setId_examen(Long id_examen) {
-        this.id_examen = id_examen;
+
+    public void setExamen(ExamenEntity examen) {
+        this.examen = examen;
     }
 
-    public Long getId_tema() {    
-        return id_tema;
+    public TemaEntity getTema() {
+        return tema;
     }
 
-    public void setId_tema(Long id_tema) {
-        this.id_tema = id_tema;
+    public void setTema(TemaEntity tema) {
+        this.tema = tema;
     }
 
 }
