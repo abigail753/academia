@@ -21,26 +21,26 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
     RandomService oRandomService;
 
     // Cargar datos aleatorios
-    private String[] arrNombres = {"Evaluación Final",
-  "Examen de Conocimientos Generales",
-  "Prueba de Comprensión de Lectura",
-  "Examen de Matemáticas Avanzadas",
-  "Evaluación de Ciencias Naturales",
-  "Prueba de Historia y Geografía",
-  "Examen de Inglés Básico",
-  "Evaluación de Competencias Digitales",
-  "Prueba de Resolución de Problemas",
-  "Examen de Ortografía y Redacción",
-  "Evaluación Semestral",
-  "Examen Diagnóstico",
-  "Prueba de Aptitudes Lógicas",
-  "Examen de Física Experimental",
-  "Evaluación de Literatura Contemporánea",
-  "Prueba de Química Orgánica",
-  "Examen de Programación en JavaScript",
-  "Evaluación de Ética y Ciudadanía",
-  "Prueba de Análisis de Datos",
-  "Examen de Diseño Gráfico",};
+    private String[] arrNombres = { "Evaluación Final",
+            "Examen de Conocimientos Generales",
+            "Prueba de Comprensión de Lectura",
+            "Examen de Matemáticas Avanzadas",
+            "Evaluación de Ciencias Naturales",
+            "Prueba de Historia y Geografía",
+            "Examen de Inglés Básico",
+            "Evaluación de Competencias Digitales",
+            "Prueba de Resolución de Problemas",
+            "Examen de Ortografía y Redacción",
+            "Evaluación Semestral",
+            "Examen Diagnóstico",
+            "Prueba de Aptitudes Lógicas",
+            "Examen de Física Experimental",
+            "Evaluación de Literatura Contemporánea",
+            "Prueba de Química Orgánica",
+            "Examen de Programación en JavaScript",
+            "Evaluación de Ética y Ciudadanía",
+            "Prueba de Análisis de Datos",
+            "Examen de Diseño Gráfico", };
 
     public Long randomCreate(Long cantidad) {
         for (int i = 0; i < cantidad; i++) {
