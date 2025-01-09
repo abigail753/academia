@@ -84,4 +84,8 @@ public class TemaEntity {
         this.curso = curso;
     }
 
+    public int getCalificaciones() {
+        return calificaciones.size();
+    }
+
 }
