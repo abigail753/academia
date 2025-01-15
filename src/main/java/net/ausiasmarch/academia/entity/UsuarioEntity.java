@@ -37,20 +37,19 @@ public class UsuarioEntity {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private java.util.List<CalificacionEntity> calificaciones;
 
-    @Lob
-    private byte[] foto;
+    private String foto;
 
     public UsuarioEntity() {
     }
 
-    public UsuarioEntity(String nombre, String apellidos, String correo, byte[] foto) {
+    public UsuarioEntity(String nombre, String apellidos, String correo, String foto) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.correo = correo;
         this.foto = foto;
     }
 
-    public UsuarioEntity(Long id, String nombre, String apellidos, String correo, byte[] foto) {
+    public UsuarioEntity(Long id, String nombre, String apellidos, String correo, String foto) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -90,11 +89,11 @@ public class UsuarioEntity {
         this.correo = correo;
     }
 
-    public byte[] getFoto() {
+    public String getFoto() {
         return foto;
     }
 
-    public void setFoto(byte[] foto) {
+    public void setFoto(String foto) {
         this.foto = foto;
     }
     
