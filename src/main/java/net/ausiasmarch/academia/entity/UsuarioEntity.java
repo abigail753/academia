@@ -31,13 +31,15 @@ public class UsuarioEntity {
     @Email
     private String correo;
 
+    private String foto;
+
+    private String tipo_usuario;
+
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private java.util.List<InscripcionEntity> inscripciones;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private java.util.List<CalificacionEntity> calificaciones;
-
-    private String foto;
 
     public UsuarioEntity() {
     }
@@ -96,7 +98,15 @@ public class UsuarioEntity {
     public void setFoto(String foto) {
         this.foto = foto;
     }
-    
+
+    public String getTipo_usuario() {
+        return tipo_usuario;
+    }
+
+    public void setTipo_usuario(String tipo_usuario) {
+        this.tipo_usuario = tipo_usuario;
+    }
+
     public int getInscripciones() {
         return inscripciones.size();
     }
