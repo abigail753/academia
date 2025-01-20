@@ -52,5 +52,14 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(oErrorBean, HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(value = UnauthorizedAccessException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ErrorBean> UnauthorizedAccessException(UnauthorizedAccessException exception) {
+        ErrorBean oErrorBean = new ErrorBean();
+        oErrorBean.setMessage(exception.getMessage());
+        oErrorBean.setStatus(HttpStatus.UNAUTHORIZED.value());
+        oErrorBean.setTimestamp(LocalDateTime.now());
+        return new ResponseEntity<>(oErrorBean, HttpStatus.UNAUTHORIZED);
+    }
 
 }

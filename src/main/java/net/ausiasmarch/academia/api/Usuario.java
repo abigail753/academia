@@ -70,5 +70,4 @@ public class Usuario {
         return new ResponseEntity<UsuarioEntity>(oUsuarioService.update(oUsuarioEntity), HttpStatus.OK);
     }
 
-
 }

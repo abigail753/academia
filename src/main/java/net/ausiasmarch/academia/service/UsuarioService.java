@@ -7,12 +7,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import net.ausiasmarch.academia.entity.UsuarioEntity;
 import net.ausiasmarch.academia.exception.ResourceNotFoundException;
 import net.ausiasmarch.academia.repository.UsuarioRepository;
 
 @Service
+@AllArgsConstructor
 public class UsuarioService implements ServiceInterface<UsuarioEntity> {
+
+    HttpServletRequest oHttpServletRequest;
 
     @Autowired
     UsuarioRepository oUsuarioRepository;
@@ -27,6 +32,8 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
     private String[] arrApellidos = {"Ruiz", "Alonso", "Castaño", "Molina", "Blanco", "Navarro", "Ortega", 
                                     "Ramos", "Castro", "Domínguez", "Suárez", "Nieto", "Aguilar", "Vargas", 
                                     "Iglesias", "Crespo", "Delgado"};
+
+    private String[] arrTipoUsuario = {"Administrador", "Estudiante", "Profesor"};
     
     public Long randomCreate(Long cantidad) {
         for (int i = 0; i < cantidad; i++) {
@@ -34,6 +41,8 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
             oUsuarioEntity.setNombre(arrNombres[oRandomService.getRandomInt(0, arrNombres.length - 1)]);
             oUsuarioEntity.setApellidos(arrApellidos[oRandomService.getRandomInt(0, arrApellidos.length - 1)]);
             oUsuarioEntity.setCorreo(oUsuarioEntity.getNombre() + oRandomService.getRandomInt(999, 9999) + "@gmail.com");
+            oUsuarioEntity.setFoto(null);
+            oUsuarioEntity.setTipo_usuario(arrTipoUsuario[oRandomService.getRandomInt(0, arrTipoUsuario.length - 1)]);
             oUsuarioRepository.save(oUsuarioEntity);
         }
         return oUsuarioRepository.count();
@@ -94,6 +103,15 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
     // Random Selection
     public UsuarioEntity randomSelection() {
         return oUsuarioRepository.findById((long) oRandomService.getRandomInt(1, (int) (long) this.count())).get();
+    }
+
+    // Autenticacion
+    public String RestrictedArea() {
+        if (oHttpServletRequest.getAttribute("correo") == null) {
+            return "No tienes permisos para acceder a esta zona";
+        } else {
+            return "Bienvenido a la zona restringida";
+        }
     }
 
 }
