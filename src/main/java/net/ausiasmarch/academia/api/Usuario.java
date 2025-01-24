@@ -28,6 +28,11 @@ public class Usuario {
     @Autowired
     UsuarioService oUsuarioService;
 
+    @GetMapping("/restricted")
+    public ResponseEntity<String> restricted() {
+        return ResponseEntity.ok("\"" + oUsuarioService.RestrictedArea() + "\"");
+    }
+
     // Random
     @PutMapping("/random/{cantidad}")
     public ResponseEntity<Long> create(@PathVariable Long cantidad) {
