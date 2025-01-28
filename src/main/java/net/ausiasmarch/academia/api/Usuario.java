@@ -28,11 +28,6 @@ public class Usuario {
     @Autowired
     UsuarioService oUsuarioService;
 
-    @GetMapping("/restricted")
-    public ResponseEntity<String> restricted() {
-        return ResponseEntity.ok("\"" + oUsuarioService.RestrictedArea() + "\"");
-    }
-
     // Random
     @PutMapping("/random/{cantidad}")
     public ResponseEntity<Long> create(@PathVariable Long cantidad) {
@@ -50,6 +45,11 @@ public class Usuario {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioEntity> getUsuario(@PathVariable Long id) {
         return new ResponseEntity<UsuarioEntity>(oUsuarioService.get(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/byEmail/{email}")
+    public ResponseEntity<UsuarioEntity> getUsuariobyEmail(@PathVariable String email) {
+        return new ResponseEntity<UsuarioEntity>(oUsuarioService.getByCorreo(email), HttpStatus.OK);
     }
 
     @GetMapping("/count")

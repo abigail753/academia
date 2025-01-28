@@ -1,5 +1,7 @@
 package net.ausiasmarch.academia.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -31,17 +33,10 @@ public class UsuarioEntity {
     private String correo;
 
     private String foto;
-
-
+    
+    // Para que al hacer el get no muestre la contraseña
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     private String tipo_usuario;
 
@@ -59,6 +54,7 @@ public class UsuarioEntity {
         this.apellidos = apellidos;
         this.correo = correo;
         this.foto = foto;
+        
     }
 
     public UsuarioEntity(Long id, String nombre, String apellidos, String correo, String foto) {
@@ -107,6 +103,14 @@ public class UsuarioEntity {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getTipo_usuario() {
