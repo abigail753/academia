@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import net.ausiasmarch.academia.entity.UsuarioEntity;
 
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
-    Page<UsuarioEntity> findByNombreContainingOrApellidosContainingOrCorreoContaining(
-            String filter2, String filter3, String filter4, Pageable oPageable);
+    Page<UsuarioEntity> findByNombreContainingOrApellidosContainingOrCorreoContainingOrTipousuarioContaining(
+            String filter2, String filter3, String filter4, String filter5, Pageable oPageable);
 
     Optional<UsuarioEntity> findByCorreo(String correo);
 

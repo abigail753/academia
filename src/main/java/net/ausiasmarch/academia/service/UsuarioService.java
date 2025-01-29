@@ -33,7 +33,7 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
             "Ramos", "Castro", "Domínguez", "Suárez", "Nieto", "Aguilar", "Vargas",
             "Iglesias", "Crespo", "Delgado" };
 
-    private String[] arrTipoUsuario = { "Administrador", "Estudiante", "Profesor" };
+    private String[] arrTipousuario = { "Administrador", "Estudiante", "Profesor" };
 
     public Long randomCreate(Long cantidad) {
 
@@ -45,7 +45,7 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
                     .setCorreo(oUsuarioEntity.getNombre() + oRandomService.getRandomInt(999, 9999) + "@gmail.com");
             oUsuarioEntity.setFoto(null);
 
-            oUsuarioEntity.setTipo_usuario(arrTipoUsuario[oRandomService.getRandomInt(0, arrTipoUsuario.length - 1)]);
+            oUsuarioEntity.setTipousuario(arrTipousuario[oRandomService.getRandomInt(0, arrTipousuario.length - 1)]);
 
             oUsuarioRepository.save(oUsuarioEntity);
         }
@@ -57,8 +57,8 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
 
         if (filter.isPresent()) {
             return oUsuarioRepository
-                    .findByNombreContainingOrApellidosContainingOrCorreoContaining(
-                            filter.get(), filter.get(), filter.get(),
+                    .findByNombreContainingOrApellidosContainingOrCorreoContainingOrTipousuarioContaining(
+                            filter.get(), filter.get(), filter.get(), filter.get(),
                             oPageable);
         } else {
             return oUsuarioRepository.findAll(oPageable);

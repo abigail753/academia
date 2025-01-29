@@ -38,7 +38,7 @@ public class UsuarioEntity {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private String tipo_usuario;
+    private String tipousuario;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private java.util.List<InscripcionEntity> inscripciones;
@@ -113,12 +113,12 @@ public class UsuarioEntity {
         this.password = password;
     }
 
-    public String getTipo_usuario() {
-        return tipo_usuario;
+    public String getTipousuario() {
+        return tipousuario;
     }
 
-    public void setTipo_usuario(String tipo_usuario) {
-        this.tipo_usuario = tipo_usuario;
+    public void setTipousuario(String tipousuario) {
+        this.tipousuario = tipousuario;
     }
 
     public int getInscripciones() {

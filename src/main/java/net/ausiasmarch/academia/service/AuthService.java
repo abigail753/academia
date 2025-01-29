@@ -53,15 +53,15 @@ public class AuthService {
     }
 
     public boolean isAdmin() {
-        return this.getUsuarioFromToken().getTipo_usuario() == "Administrador";
+        return this.getUsuarioFromToken().getTipousuario() == "Administrador";
     }
 
     public boolean isProfesor() {
-        return this.getUsuarioFromToken().getTipo_usuario() == "Profesor";
+        return this.getUsuarioFromToken().getTipousuario() == "Profesor";
     }
 
     public boolean isEstudiante() {
-        return this.getUsuarioFromToken().getTipo_usuario() == "Estudiante";
+        return this.getUsuarioFromToken().getTipousuario() == "Estudiante";
     }
 
     public boolean isAdminOrProfesor() {
