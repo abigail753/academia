@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import net.ausiasmarch.academia.bean.LogindataBean;
 import net.ausiasmarch.academia.entity.UsuarioEntity;
+import net.ausiasmarch.academia.exception.UnauthorizedAccessException;
 import net.ausiasmarch.academia.repository.UsuarioRepository;
 
 @Service
@@ -33,19 +34,23 @@ public class AuthService {
         }
     }
 
-    private Map<String, String> getClaims(String email) {
+    private Map<String, String> getClaims(String correo) {
         Map<String, String> claims = new HashMap<>();
-        claims.put("email", email);
+        claims.put("email", correo);
         return claims;
     };
 
-    public String getToken(String email) {
-        return JWTHelper.generateToken(getClaims(email));
+    public String getToken(String correo) {
+        return JWTHelper.generateToken(getClaims(correo));
     }
 
     public UsuarioEntity getUsuarioFromToken() {
-        String correo = oHttpServletRequest.getAttribute("correo").toString();
-        return oUsuarioRepository.findByCorreo(correo).get();
+        if (oHttpServletRequest.getAttribute("correo") == null) {
+            throw new UnauthorizedAccessException("No hay usuario en la sesión");
+        } else {
+            String correo = oHttpServletRequest.getAttribute("correo").toString();
+            return oUsuarioRepository.findByCorreo(correo).get();
+        }   
     }
 
     public boolean isSessionActive() {
