@@ -43,7 +43,6 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
     private String[] arrTipousuario = { "Administrador", "Estudiante", "Profesor" };
 
     public Long randomCreate(Long cantidad) {
-
         for (int i = 0; i < cantidad; i++) {
             UsuarioEntity oUsuarioEntity = new UsuarioEntity();
             oUsuarioEntity.setNombre(arrNombres[oRandomService.getRandomInt(0, arrNombres.length - 1)]);
@@ -71,7 +70,7 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
                 return oUsuarioRepository.findAll(oPageable);
             }
         } else if (oAuthService.isProfesor()) {
-             if (filter.isPresent()) {
+            if (filter.isPresent()) {
                 return oUsuarioRepository
                         .findByNombreContainingOrApellidosContainingOrCorreoContainingOrTipousuarioContaining(
                                 filter.get(), filter.get(), filter.get(), "Estudiante",
@@ -79,7 +78,7 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
             } else {
                 return oUsuarioRepository.findByTipousuario("Estudiante", oPageable);
             }
-        }else {
+        } else {
             throw new UnauthorizedAccessException("No tienes permisos para ver los usuarios");
         }
     }
@@ -102,19 +101,70 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
 
     // Crear
     public UsuarioEntity create(UsuarioEntity oUsuarioEntity) {
-        oUsuarioEntity.setPassword(oHashService.hashPassword(oUsuarioEntity.getPassword()));
-        return oUsuarioRepository.save(oUsuarioEntity);
+        if (oAuthService.isAdmin()) {
+            oUsuarioEntity.setPassword(oHashService.hashPassword(oUsuarioEntity.getPassword()));
+            return oUsuarioRepository.save(oUsuarioEntity);
+        } else {
+            throw new UnauthorizedAccessException("No tienes permisos para crear usuarios.");
+        }
     }
 
     // Eliminar
     public Long delete(Long id) {
-        oUsuarioRepository.deleteById(id);
-        return 1L;
+        if (oAuthService.isAdmin()) {
+            oUsuarioRepository.deleteById(id);
+            return 1L;
+        } else {
+            throw new UnauthorizedAccessException("No tienes permisos para eliminar usuarios.");
+        }
     }
 
     // Actualizar
     public UsuarioEntity update(UsuarioEntity oUsuarioEntity) {
+        if (oAuthService.isAdminOrProfesor()) {
+
+            if (oAuthService.isAdmin()) {
+                UsuarioEntity oUsuarioEntityFromDatabase = oUsuarioRepository.findById(oUsuarioEntity.getId()).get();
+
+                if (oUsuarioEntity.getNombre() != null) {
+                    oUsuarioEntityFromDatabase.setNombre(oUsuarioEntity.getNombre());
+                }
+
+                if (oUsuarioEntity.getApellidos() != null) {
+                    oUsuarioEntityFromDatabase.setApellidos(oUsuarioEntity.getApellidos());
+                }
+
+                if (oUsuarioEntity.getCorreo() != null) {
+                    oUsuarioEntityFromDatabase.setCorreo(oUsuarioEntity.getCorreo());
+                }
+
+                if (oUsuarioEntity.getFoto() != null) {
+                    oUsuarioEntityFromDatabase.setFoto(oUsuarioEntity.getFoto());
+                }
+
+                if (oUsuarioEntity.getPassword() != null) {
+                    oUsuarioEntityFromDatabase.setPassword(oHashService.hashPassword(oUsuarioEntity.getPassword()));
+                }
+
+                if (oUsuarioEntity.getTipousuario() != null) { 
+                    oUsuarioEntityFromDatabase.setTipousuario(oUsuarioEntity.getTipousuario());
+                }
+
+                return oUsuarioRepository.save(oUsuarioEntityFromDatabase);
+            } else {
+                if (oAuthService.isProfesor()) {
+                    
+                }
+            }
+
+            
+
+        } else {
+            throw new UnauthorizedAccessException("No tienes permisos para editar usuarios.");
+        }
+
         UsuarioEntity oUsuarioEntityFromDatabase = oUsuarioRepository.findById(oUsuarioEntity.getId()).get();
+
         if (oUsuarioEntity.getNombre() != null) {
             oUsuarioEntityFromDatabase.setNombre(oUsuarioEntity.getNombre());
         }
