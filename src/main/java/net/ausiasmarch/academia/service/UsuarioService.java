@@ -70,7 +70,16 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
             } else {
                 return oUsuarioRepository.findAll(oPageable);
             }
-        } else {
+        } else if (oAuthService.isProfesor()) {
+             if (filter.isPresent()) {
+                return oUsuarioRepository
+                        .findByNombreContainingOrApellidosContainingOrCorreoContainingOrTipousuarioContaining(
+                                filter.get(), filter.get(), filter.get(), "Estudiante",
+                                oPageable);
+            } else {
+                return oUsuarioRepository.findByTipousuario("Estudiante", oPageable);
+            }
+        }else {
             throw new UnauthorizedAccessException("No tienes permisos para ver los usuarios");
         }
     }

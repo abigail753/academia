@@ -47,7 +47,7 @@ public class Usuario {
         return new ResponseEntity<UsuarioEntity>(oUsuarioService.get(id), HttpStatus.OK);
     }
 
-    @GetMapping("/byCorreo/{correo}")
+    @GetMapping("/bycorreo/{correo}")
     public ResponseEntity<UsuarioEntity> getUsuariobyEmail(@PathVariable String correo) {
         return new ResponseEntity<UsuarioEntity>(oUsuarioService.getByCorreo(correo), HttpStatus.OK);
     }
