@@ -62,4 +62,14 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(oErrorBean, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(value = NoSuchAlgorithmException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorBean> NoSuchAlgorithmException(NoSuchAlgorithmException exception) {
+        ErrorBean oErrorBean = new ErrorBean();
+        oErrorBean.setMessage(exception.getMessage());
+        oErrorBean.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        oErrorBean.setTimestamp(LocalDateTime.now());
+        return new ResponseEntity<>(oErrorBean, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

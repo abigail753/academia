@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import net.ausiasmarch.academia.entity.UsuarioEntity;
 import net.ausiasmarch.academia.exception.ResourceNotFoundException;
+import net.ausiasmarch.academia.exception.UnauthorizedAccessException;
 import net.ausiasmarch.academia.repository.UsuarioRepository;
 
 @Service
@@ -24,6 +25,12 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
 
     @Autowired
     RandomService oRandomService;
+
+    @Autowired
+    HashService oHashService;
+
+    @Autowired
+    AuthService oAuthService;
 
     // Cargar datos aleatorios - Si esta fuera no lo lee
     private String[] arrNombres = { "Juan", "Sofía", "Andrea", "Claudia", "Esteban", "Julia", "Isabel", "Fernando",
@@ -54,14 +61,17 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
 
     // Cargar datos
     public Page<UsuarioEntity> getPage(Pageable oPageable, Optional<String> filter) {
-
-        if (filter.isPresent()) {
-            return oUsuarioRepository
-                    .findByNombreContainingOrApellidosContainingOrCorreoContainingOrTipousuarioContaining(
-                            filter.get(), filter.get(), filter.get(), filter.get(),
-                            oPageable);
+        if (oAuthService.isAdmin()) {
+            if (filter.isPresent()) {
+                return oUsuarioRepository
+                        .findByNombreContainingOrApellidosContainingOrCorreoContainingOrTipousuarioContaining(
+                                filter.get(), filter.get(), filter.get(), filter.get(),
+                                oPageable);
+            } else {
+                return oUsuarioRepository.findAll(oPageable);
+            }
         } else {
-            return oUsuarioRepository.findAll(oPageable);
+            throw new UnauthorizedAccessException("No tienes permisos para ver los usuarios");
         }
     }
 
@@ -72,7 +82,7 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
     }
 
     public UsuarioEntity getByCorreo(String correo) {
-    return oUsuarioRepository.findByCorreo(correo)
+        return oUsuarioRepository.findByCorreo(correo)
                 .orElseThrow(() -> new ResourceNotFoundException("Correo no encontrado"));
     }
 
@@ -83,6 +93,7 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
 
     // Crear
     public UsuarioEntity create(UsuarioEntity oUsuarioEntity) {
+        oUsuarioEntity.setPassword(oHashService.hashPassword(oUsuarioEntity.getPassword()));
         return oUsuarioRepository.save(oUsuarioEntity);
     }
 

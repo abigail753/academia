@@ -47,9 +47,9 @@ public class Usuario {
         return new ResponseEntity<UsuarioEntity>(oUsuarioService.get(id), HttpStatus.OK);
     }
 
-    @GetMapping("/byCorreo/{email}")
-    public ResponseEntity<UsuarioEntity> getUsuariobyEmail(@PathVariable String email) {
-        return new ResponseEntity<UsuarioEntity>(oUsuarioService.getByCorreo(email), HttpStatus.OK);
+    @GetMapping("/byCorreo/{correo}")
+    public ResponseEntity<UsuarioEntity> getUsuariobyEmail(@PathVariable String correo) {
+        return new ResponseEntity<UsuarioEntity>(oUsuarioService.getByCorreo(correo), HttpStatus.OK);
     }
 
     @GetMapping("/count")

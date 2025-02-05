@@ -36,7 +36,7 @@ public class AuthService {
 
     private Map<String, String> getClaims(String correo) {
         Map<String, String> claims = new HashMap<>();
-        claims.put("email", correo);
+        claims.put("correo", correo);
         return claims;
     };
 
@@ -58,15 +58,15 @@ public class AuthService {
     }
 
     public boolean isAdmin() {
-        return this.getUsuarioFromToken().getTipousuario() == "Administrador";
+        return "Administrador".equals(this.getUsuarioFromToken().getTipousuario());
     }
 
     public boolean isProfesor() {
-        return this.getUsuarioFromToken().getTipousuario() == "Profesor";
+        return "Profesor".equals(this.getUsuarioFromToken().getTipousuario());
     }
 
     public boolean isEstudiante() {
-        return this.getUsuarioFromToken().getTipousuario() == "Estudiante";
+        return "Estudiante".equals(this.getUsuarioFromToken().getTipousuario());
     }
 
     public boolean isAdminOrProfesor() {

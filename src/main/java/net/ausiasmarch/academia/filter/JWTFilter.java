@@ -46,13 +46,13 @@ public class JWTFilter implements Filter {
                 } else {
                     String sTokenReal = sToken.substring(7);
 
-                    String email = JWTHelper.validateToken(sTokenReal);
+                    String correo = JWTHelper.validateToken(sTokenReal);
 
-                    if (email == null) {
+                    if (correo == null) {
                         oHttpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token no válido");
                         return;
                     } else {
-                        oHttpServletRequest.setAttribute("email", email);
+                        oHttpServletRequest.setAttribute("correo", correo);
                         oFilterChain.doFilter(oServletRequest, oServletReponse);
                     }
                 }
