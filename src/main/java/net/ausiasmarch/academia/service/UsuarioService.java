@@ -77,10 +77,12 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
         } else {
             if (filter.isPresent()) {
                 return oUsuarioRepository
-                        .findByNombreContainingOrApellidosContainingOrCorreoContainingOrTipousuarioContaining(
-                                filter.get(), filter.get(), filter.get(), "Estudiante",
+                        .findByTipousuarioAndNombreContainingOrTipousuarioAndApellidosContainingOrTipousuarioAndCorreoContaining (
+                                "Estudiante", filter.get(),
+                                "Estudiante", filter.get(),
+                                "Estudiante", filter.get(),
                                 oPageable);
-            } else {
+            } else { 
                 return oUsuarioRepository.findByTipousuario("Estudiante", oPageable);
             }
         }
@@ -126,7 +128,7 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
     public Long delete(Long id) {
 
         if (!oAuthService.isAdmin()) {
-            throw new UnauthorizedAccessException("No tienes permisos para ver los datos de usuarios.");
+            throw new UnauthorizedAccessException("No tienes permisos para eliminar usuarios.");
         }
 
         oUsuarioRepository.deleteById(id);

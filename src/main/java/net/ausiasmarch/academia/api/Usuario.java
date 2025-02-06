@@ -25,6 +25,7 @@ import net.ausiasmarch.academia.service.UsuarioService;
 @RestController
 @RequestMapping("/usuario")
 public class Usuario {
+    
     @Autowired
     UsuarioService oUsuarioService;
 
@@ -37,6 +38,12 @@ public class Usuario {
     // Cargar
     @GetMapping("")
     public ResponseEntity<Page<UsuarioEntity>> getPage(
+            Pageable oPageable,
+            @RequestParam Optional<String> filter) {
+        return new ResponseEntity<Page<UsuarioEntity>>(oUsuarioService.getPage(oPageable, filter), HttpStatus.OK);
+    }
+
+    public ResponseEntity<Page<UsuarioEntity>> getPageAlumnos(
             Pageable oPageable,
             @RequestParam Optional<String> filter) {
         return new ResponseEntity<Page<UsuarioEntity>>(oUsuarioService.getPage(oPageable, filter), HttpStatus.OK);
