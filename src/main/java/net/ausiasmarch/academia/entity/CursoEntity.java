@@ -18,9 +18,6 @@ public class CursoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotNull
-    @Size(min = 3, max = 255)
-    private String profesor;
 
     @NotNull
     @Size(min = 3, max = 255)
@@ -39,16 +36,14 @@ public class CursoEntity {
     public CursoEntity() {
     }
 
-    public CursoEntity(String profesor, String nombre, String descripcion) {
-        this.profesor = profesor;
+    public CursoEntity(String nombre, String descripcion) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         
     }
     
-    public CursoEntity(Long id, String profesor, String nombre, String descripcion) {
+    public CursoEntity(Long id, String nombre, String descripcion) {
         this.id = id;
-        this.profesor = profesor;
         this.nombre = nombre;
         this.descripcion = descripcion;
     }
@@ -61,13 +56,6 @@ public class CursoEntity {
         this.id = id;
     }
 
-    public String getProfesor() {
-        return profesor;
-    }
-
-    public void setProfesor(String profesor) {
-        this.profesor = profesor;
-    }
 
     public String getNombre() {
         return nombre;

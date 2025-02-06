@@ -19,10 +19,6 @@ public class CursoService implements ServiceInterface<CursoEntity> {
     @Autowired
     RandomService oRandomService;
 
-    // Cargar datos aleatorios
-    private String[] arrProfesor = { "Luis", "María", "Javier", "Ana", "Miguel", "Sofía", "Carlos",
-            "Laura", "José", "Patricia", "Fernando", "Isabel", "David", "Cristina", "Antonio", "Elena" };
-
     private String[] arrNombres = { "Matemáticas", "Java", "Historia", "Física", "Filosofía", "Inglés", "Marketing",
             "Photoshop", "Finanzas", "Web", "Python", "Diseño", "Proyectos", "Música",
             "Literatura", "Química" };
@@ -50,7 +46,6 @@ public class CursoService implements ServiceInterface<CursoEntity> {
         for (int i = 0; i < cantidad; i++) {
             CursoEntity oCursoEntity = new CursoEntity();
 
-            oCursoEntity.setProfesor(arrProfesor[oRandomService.getRandomInt(0, arrProfesor.length - 1)]);
             oCursoEntity.setNombre(arrNombres[oRandomService.getRandomInt(0, arrNombres.length - 1)]);
             oCursoEntity.setDescripcion(arrDescripcion[oRandomService.getRandomInt(0, arrDescripcion.length - 1)]);
 
@@ -64,7 +59,7 @@ public class CursoService implements ServiceInterface<CursoEntity> {
 
         if (filter.isPresent()) {
             return oCursoRepository
-                    .findByProfesorContainingOrNombreContainingOrDescripcion(
+                    .findByNombreContainingOrDescripcion(
                             filter.get(), filter.get(), filter.get(), oPageable);
         } else {
             return oCursoRepository.findAll(oPageable);
@@ -90,10 +85,7 @@ public class CursoService implements ServiceInterface<CursoEntity> {
     // Actualizar
     public CursoEntity update(CursoEntity oCursoEntity) {
         CursoEntity oCursoEntityFromDatabase = oCursoRepository.findById(oCursoEntity.getId()).get();
-        if (oCursoEntity.getProfesor() != null) {
-            oCursoEntityFromDatabase.setProfesor(oCursoEntity.getProfesor());
-        }
-
+    
         if (oCursoEntity.getNombre() != null) {
             oCursoEntityFromDatabase.setNombre(oCursoEntity.getNombre());
         }

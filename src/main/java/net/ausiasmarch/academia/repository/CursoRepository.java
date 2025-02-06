@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import net.ausiasmarch.academia.entity.CursoEntity;
 
 public interface CursoRepository extends JpaRepository<CursoEntity, Long>  {
-    Page<CursoEntity> findByProfesorContainingOrNombreContainingOrDescripcion(
+    Page<CursoEntity> findByNombreContainingOrDescripcion(
             String filter2, String filter3, String filter4, Pageable oPageable);
 }

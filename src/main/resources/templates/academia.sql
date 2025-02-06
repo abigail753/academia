@@ -44,7 +44,6 @@ CREATE TABLE `calificacion` (
 
 CREATE TABLE `curso` (
   `id` bigint NOT NULL,
-  `profesor` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `nombre` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `descripcion` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
