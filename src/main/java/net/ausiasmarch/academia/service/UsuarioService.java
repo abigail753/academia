@@ -60,6 +60,11 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
 
     // Cargar datos
     public Page<UsuarioEntity> getPage(Pageable oPageable, Optional<String> filter) {
+
+        if (!oAuthService.isAdminOrProfesor()) {
+            throw new UnauthorizedAccessException("No tienes permisos para ver los datos de usuarios.");
+        }
+
         if (oAuthService.isAdmin()) {
             if (filter.isPresent()) {
                 return oUsuarioRepository
@@ -69,7 +74,7 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
             } else {
                 return oUsuarioRepository.findAll(oPageable);
             }
-        } else if (oAuthService.isProfesor()) {
+        } else {
             if (filter.isPresent()) {
                 return oUsuarioRepository
                         .findByNombreContainingOrApellidosContainingOrCorreoContainingOrTipousuarioContaining(
@@ -78,15 +83,22 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
             } else {
                 return oUsuarioRepository.findByTipousuario("Estudiante", oPageable);
             }
-        } else {
-            throw new UnauthorizedAccessException("No tienes permisos para ver los usuarios");
         }
     }
 
     public UsuarioEntity get(Long id) {
-        return oUsuarioRepository.findById(id)
+        if (!oAuthService.isAdminOrProfesor()) {
+            throw new UnauthorizedAccessException("No tienes permisos para ver los datos de usuarios.");
+        }
+
+        UsuarioEntity oUsuarioEntity = oUsuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
-        // return oUsuarioRepository.findById(id).get();
+
+        if (oAuthService.isProfesor() && !oUsuarioEntity.getTipousuario().equals("Estudiante")) {
+            throw new UnauthorizedAccessException("No tienes permisos para ver los datos de este usuario.");
+        }
+
+        return oUsuarioEntity;
     }
 
     public UsuarioEntity getByCorreo(String correo) {
@@ -101,82 +113,71 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
 
     // Crear
     public UsuarioEntity create(UsuarioEntity oUsuarioEntity) {
-        if (oAuthService.isAdmin()) {
-            oUsuarioEntity.setPassword(oHashService.hashPassword(oUsuarioEntity.getPassword()));
-            return oUsuarioRepository.save(oUsuarioEntity);
-        } else {
-            throw new UnauthorizedAccessException("No tienes permisos para crear usuarios.");
+
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para ver los datos de usuarios.");
         }
+
+        oUsuarioEntity.setPassword(oHashService.hashPassword(oUsuarioEntity.getPassword()));
+        return oUsuarioRepository.save(oUsuarioEntity);
     }
 
     // Eliminar
     public Long delete(Long id) {
-        if (oAuthService.isAdmin()) {
-            oUsuarioRepository.deleteById(id);
-            return 1L;
-        } else {
-            throw new UnauthorizedAccessException("No tienes permisos para eliminar usuarios.");
+
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para ver los datos de usuarios.");
         }
+
+        oUsuarioRepository.deleteById(id);
+        return 1L;
     }
 
     // Actualizar
     public UsuarioEntity update(UsuarioEntity oUsuarioEntity) {
-        if (oAuthService.isAdminOrProfesor()) {
 
-            if (oAuthService.isAdmin()) {
-                UsuarioEntity oUsuarioEntityFromDatabase = oUsuarioRepository.findById(oUsuarioEntity.getId()).get();
-
-                if (oUsuarioEntity.getNombre() != null) {
-                    oUsuarioEntityFromDatabase.setNombre(oUsuarioEntity.getNombre());
-                }
-
-                if (oUsuarioEntity.getApellidos() != null) {
-                    oUsuarioEntityFromDatabase.setApellidos(oUsuarioEntity.getApellidos());
-                }
-
-                if (oUsuarioEntity.getCorreo() != null) {
-                    oUsuarioEntityFromDatabase.setCorreo(oUsuarioEntity.getCorreo());
-                }
-
-                if (oUsuarioEntity.getFoto() != null) {
-                    oUsuarioEntityFromDatabase.setFoto(oUsuarioEntity.getFoto());
-                }
-
-                if (oUsuarioEntity.getPassword() != null) {
-                    oUsuarioEntityFromDatabase.setPassword(oHashService.hashPassword(oUsuarioEntity.getPassword()));
-                }
-
-                if (oUsuarioEntity.getTipousuario() != null) { 
-                    oUsuarioEntityFromDatabase.setTipousuario(oUsuarioEntity.getTipousuario());
-                }
-
-                return oUsuarioRepository.save(oUsuarioEntityFromDatabase);
-            } else {
-                if (oAuthService.isProfesor()) {
-                    
-                }
-            }
-
-            
-
-        } else {
+        if (!oAuthService.isAdminOrProfesor()) {
             throw new UnauthorizedAccessException("No tienes permisos para editar usuarios.");
         }
 
         UsuarioEntity oUsuarioEntityFromDatabase = oUsuarioRepository.findById(oUsuarioEntity.getId()).get();
 
-        if (oUsuarioEntity.getNombre() != null) {
-            oUsuarioEntityFromDatabase.setNombre(oUsuarioEntity.getNombre());
-        }
+        if (oAuthService.isAdmin()) {
+            if (oUsuarioEntity.getNombre() != null) {
+                oUsuarioEntityFromDatabase.setNombre(oUsuarioEntity.getNombre());
+            }
 
-        if (oUsuarioEntity.getApellidos() != null) {
-            oUsuarioEntityFromDatabase.setApellidos(oUsuarioEntity.getApellidos());
-        }
+            if (oUsuarioEntity.getApellidos() != null) {
+                oUsuarioEntityFromDatabase.setApellidos(oUsuarioEntity.getApellidos());
+            }
 
-        if (oUsuarioEntity.getCorreo() != null) {
-            oUsuarioEntityFromDatabase.setCorreo(oUsuarioEntity.getCorreo());
+            if (oUsuarioEntity.getCorreo() != null) {
+                oUsuarioEntityFromDatabase.setCorreo(oUsuarioEntity.getCorreo());
+            }
+
+            if (oUsuarioEntity.getPassword() != null) {
+                oUsuarioEntityFromDatabase.setPassword(oHashService.hashPassword(oUsuarioEntity.getPassword()));
+            }
+
+            if (oUsuarioEntity.getFoto() != null) {
+                oUsuarioEntityFromDatabase.setFoto(oUsuarioEntity.getFoto());
+            }
+
+            if (oUsuarioEntity.getTipousuario() != null) {
+                oUsuarioEntityFromDatabase.setTipousuario(oUsuarioEntity.getTipousuario());
+            }
+
+        } else if (oAuthService.isProfesor()) {
+            if (oUsuarioEntity.getNombre() != null) {
+                oUsuarioEntityFromDatabase.setNombre(oUsuarioEntity.getNombre());
+            }
+
+            if (oUsuarioEntity.getApellidos() != null) {
+                oUsuarioEntityFromDatabase.setApellidos(oUsuarioEntity.getApellidos());
+            }
         }
         return oUsuarioRepository.save(oUsuarioEntityFromDatabase);
+
     }
 
     // Random Selection
