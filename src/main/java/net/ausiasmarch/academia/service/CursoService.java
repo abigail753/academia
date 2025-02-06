@@ -72,15 +72,12 @@ public class CursoService implements ServiceInterface<CursoEntity> {
         } else if (oAuthService.isProfesor()) {
 
             UsuarioEntity oProfesor = oAuthService.getUsuarioFromToken();
-
-            
-
+    
             if (filter.isPresent()) {
                 return oCursoRepository
                         .findByNombreContainingOrDescripcion(
                                 filter.get(), filter.get(), filter.get(),oPageable);
             } else {
-                System.out.println(oProfesor.getId());
                 return oCursoRepository.findByProfesor(oProfesor.getId(), oPageable);
             }
         } else {
