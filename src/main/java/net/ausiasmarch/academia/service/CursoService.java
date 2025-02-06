@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.academia.entity.CursoEntity;
+import net.ausiasmarch.academia.entity.UsuarioEntity;
 import net.ausiasmarch.academia.exception.ResourceNotFoundException;
+import net.ausiasmarch.academia.exception.UnauthorizedAccessException;
 import net.ausiasmarch.academia.repository.CursoRepository;
 
 @Service
@@ -18,6 +20,9 @@ public class CursoService implements ServiceInterface<CursoEntity> {
 
     @Autowired
     RandomService oRandomService;
+
+    @Autowired
+    AuthService oAuthService;
 
     private String[] arrNombres = { "Matemáticas", "Java", "Historia", "Física", "Filosofía", "Inglés", "Marketing",
             "Photoshop", "Finanzas", "Web", "Python", "Diseño", "Proyectos", "Música",
@@ -56,13 +61,30 @@ public class CursoService implements ServiceInterface<CursoEntity> {
 
     // Cargar datos
     public Page<CursoEntity> getPage(Pageable oPageable, Optional<String> filter) {
+        if (oAuthService.isAdmin()) {
+            if (filter.isPresent()) {
+                return oCursoRepository
+                        .findByNombreContainingOrDescripcion(
+                                filter.get(), filter.get(), filter.get(), oPageable);
+            } else {
+                return oCursoRepository.findAll(oPageable);
+            }
+        } else if (oAuthService.isProfesor()) {
 
-        if (filter.isPresent()) {
-            return oCursoRepository
-                    .findByNombreContainingOrDescripcion(
-                            filter.get(), filter.get(), filter.get(), oPageable);
+            UsuarioEntity oProfesor = oAuthService.getUsuarioFromToken();
+
+            
+
+            if (filter.isPresent()) {
+                return oCursoRepository
+                        .findByNombreContainingOrDescripcion(
+                                filter.get(), filter.get(), filter.get(),oPageable);
+            } else {
+                System.out.println(oProfesor.getId());
+                return oCursoRepository.findByProfesor(oProfesor.getId(), oPageable);
+            }
         } else {
-            return oCursoRepository.findAll(oPageable);
+            throw new UnauthorizedAccessException("No tienes permisos para todo el listado de cursos.");
         }
     }
 
@@ -85,7 +107,7 @@ public class CursoService implements ServiceInterface<CursoEntity> {
     // Actualizar
     public CursoEntity update(CursoEntity oCursoEntity) {
         CursoEntity oCursoEntityFromDatabase = oCursoRepository.findById(oCursoEntity.getId()).get();
-    
+
         if (oCursoEntity.getNombre() != null) {
             oCursoEntityFromDatabase.setNombre(oCursoEntity.getNombre());
         }
