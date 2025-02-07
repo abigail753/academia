@@ -9,10 +9,13 @@ import org.springframework.data.repository.query.Param;
 import net.ausiasmarch.academia.entity.CursoEntity;
 
 public interface CursoRepository extends JpaRepository<CursoEntity, Long>  {
-    Page<CursoEntity> findByNombreContainingOrDescripcion(
-            String filter2, String filter3, String filter4, Pageable oPageable);
+    
+    Page<CursoEntity> findByNombreContainingOrDescripcion(String filter2, String filter3, Pageable oPageable);
+
+    @Query(value = "SELECT c.* FROM curso c JOIN inscripcion i ON c.id = i.id_curso WHERE i.id_usuario = :id_usuario AND (c.nombre LIKE %:filter% OR c.descripcion LIKE %:filter%)", nativeQuery = true)
+    Page<CursoEntity> findByNombreContainingOrDescripcion(@Param("id_usuario") Long id_usuario, @Param("filter") String filter, Pageable oPageable);
 
     @Query(value = "SELECT c.* FROM curso c JOIN inscripcion i ON c.id = i.id_curso WHERE i.id_usuario = :id_usuario", nativeQuery = true)
-    Page<CursoEntity> findByProfesor(@Param("id_usuario") Long id_usuario, Pageable pageable);
+    Page<CursoEntity>findByProfesor(@Param("id_usuario") Long id_usuario, Pageable pageable);
 
 }

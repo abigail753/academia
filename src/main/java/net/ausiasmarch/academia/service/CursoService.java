@@ -8,10 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.academia.entity.CursoEntity;
+import net.ausiasmarch.academia.entity.InscripcionEntity;
 import net.ausiasmarch.academia.entity.UsuarioEntity;
 import net.ausiasmarch.academia.exception.ResourceNotFoundException;
 import net.ausiasmarch.academia.exception.UnauthorizedAccessException;
 import net.ausiasmarch.academia.repository.CursoRepository;
+import net.ausiasmarch.academia.repository.InscripcionRepository;
 
 @Service
 public class CursoService implements ServiceInterface<CursoEntity> {
@@ -23,6 +25,9 @@ public class CursoService implements ServiceInterface<CursoEntity> {
 
     @Autowired
     AuthService oAuthService;
+
+    @Autowired
+    InscripcionRepository oInscripcionRepository;
 
     private String[] arrNombres = { "Matemáticas", "Java", "Historia", "Física", "Filosofía", "Inglés", "Marketing",
             "Photoshop", "Finanzas", "Web", "Python", "Diseño", "Proyectos", "Música",
@@ -65,18 +70,16 @@ public class CursoService implements ServiceInterface<CursoEntity> {
             if (filter.isPresent()) {
                 return oCursoRepository
                         .findByNombreContainingOrDescripcion(
-                                filter.get(), filter.get(), filter.get(), oPageable);
+                                filter.get(), filter.get(), oPageable);
             } else {
                 return oCursoRepository.findAll(oPageable);
             }
         } else if (oAuthService.isProfesor()) {
 
             UsuarioEntity oProfesor = oAuthService.getUsuarioFromToken();
-    
+
             if (filter.isPresent()) {
-                return oCursoRepository
-                        .findByNombreContainingOrDescripcion(
-                                filter.get(), filter.get(), filter.get(),oPageable);
+                return oCursoRepository.findByNombreContainingOrDescripcion(oProfesor.getId(), filter.get(), oPageable);
             } else {
                 return oCursoRepository.findByProfesor(oProfesor.getId(), oPageable);
             }
@@ -98,7 +101,23 @@ public class CursoService implements ServiceInterface<CursoEntity> {
 
     // Crear
     public CursoEntity create(CursoEntity oCursoEntity) {
-        return oCursoRepository.save(oCursoEntity);
+
+        if (oAuthService.isAdmin()) {
+            return oCursoRepository.save(oCursoEntity);
+        }
+
+        if (oAuthService.isProfesor()) {
+            oCursoRepository.save(oCursoEntity);
+            InscripcionEntity oInscripcionEntity = new InscripcionEntity(oAuthService.getUsuarioFromToken(), oCursoEntity);
+            oInscripcionRepository.save(oInscripcionEntity);
+
+            return oCursoEntity;
+        }
+
+
+
+            throw new UnauthorizedAccessException("No tienes permisos para crear cursos.");
+        
     }
 
     // Actualizar
