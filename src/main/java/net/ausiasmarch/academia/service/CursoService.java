@@ -89,14 +89,26 @@ public class CursoService implements ServiceInterface<CursoEntity> {
     }
 
     public CursoEntity get(Long id) {
-        // if (oAuthService.isAdmin()) {
-        return oCursoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado"));
-        // }
 
-        // if (oAuthService.isProfesor()) {
+        if (oAuthService.isAdmin()) {
+            return oCursoRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado"));
+        }
 
-        // }
+        if (oAuthService.isProfesor()) {
+            UsuarioEntity oUsuarioEntity = oAuthService.getUsuarioFromToken();
+
+            CursoEntity oCursoEntity = oCursoRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado"));
+
+            if (oInscripcionRepository.findByUsuarioIdAndCursoId(oUsuarioEntity.getId(), oCursoEntity.getId()) == null) {
+                throw new UnauthorizedAccessException("No tienes permisos para ver este curso");
+            } else {
+                return oCursoEntity;
+            }
+        }
+
+        throw new UnauthorizedAccessException("No tienes permisos para ver este curso.");
 
     }
 
@@ -146,9 +158,8 @@ public class CursoService implements ServiceInterface<CursoEntity> {
 
             UsuarioEntity oUsuarioEntity = oAuthService.getUsuarioFromToken();
 
-            oCursoEntity.getId();
-
-            if (oInscripcionRepository.findByUsuarioIdAndCursoId(oUsuarioEntity.getId(), oCursoEntity.getId()) == null) {
+            if (oInscripcionRepository.findByUsuarioIdAndCursoId(oUsuarioEntity.getId(),
+                    oCursoEntity.getId()) == null) {
                 throw new UnauthorizedAccessException("No tienes permisos para editar este curso");
             } else {
                 if (oCursoEntity.getNombre() != null) {
@@ -170,6 +181,9 @@ public class CursoService implements ServiceInterface<CursoEntity> {
 
     // Eliminar
     public Long delete(Long id) {
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para eliminar cursos.");
+        }
         oCursoRepository.deleteById(id);
         return 1L;
     }
