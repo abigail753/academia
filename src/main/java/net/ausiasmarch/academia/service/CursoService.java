@@ -89,14 +89,14 @@ public class CursoService implements ServiceInterface<CursoEntity> {
     }
 
     public CursoEntity get(Long id) {
-        //if (oAuthService.isAdmin()) {
-            return oCursoRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado"));
-        //}
+        // if (oAuthService.isAdmin()) {
+        return oCursoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado"));
+        // }
 
-        //if (oAuthService.isProfesor()) {
+        // if (oAuthService.isProfesor()) {
 
-        //}
+        // }
 
     }
 
@@ -128,10 +128,9 @@ public class CursoService implements ServiceInterface<CursoEntity> {
     // Actualizar
     public CursoEntity update(CursoEntity oCursoEntity) {
 
+        CursoEntity oCursoEntityFromDatabase = oCursoRepository.findById(oCursoEntity.getId()).get();
 
         if (oAuthService.isAdmin()) {
-            CursoEntity oCursoEntityFromDatabase = oCursoRepository.findById(oCursoEntity.getId()).get();
-            System.out.println("Esta entrando como admin");
             if (oCursoEntity.getNombre() != null) {
                 oCursoEntityFromDatabase.setNombre(oCursoEntity.getNombre());
             }
@@ -144,18 +143,24 @@ public class CursoService implements ServiceInterface<CursoEntity> {
         }
 
         if (oAuthService.isProfesor()) {
-            CursoEntity oCursoEntityFromDatabase = oCursoRepository.findById(oCursoEntity.getId()).get();
 
-            UsuarioEntity oProfesor = oAuthService.getUsuarioFromToken();
-    
-            // Si está inscrito, puede actualizarlo
-            if (oCursoEntity.getNombre() != null) {
-                oCursoEntityFromDatabase.setNombre(oCursoEntity.getNombre());
+            UsuarioEntity oUsuarioEntity = oAuthService.getUsuarioFromToken();
+
+            oCursoEntity.getId();
+
+            if (oInscripcionRepository.findByUsuarioIdAndCursoId(oUsuarioEntity.getId(), oCursoEntity.getId()) == null) {
+                throw new UnauthorizedAccessException("No tienes permisos para editar este curso");
+            } else {
+                if (oCursoEntity.getNombre() != null) {
+                    oCursoEntityFromDatabase.setNombre(oCursoEntity.getNombre());
+                }
+
+                if (oCursoEntity.getDescripcion() != null) {
+                    oCursoEntityFromDatabase.setDescripcion(oCursoEntity.getDescripcion());
+                }
+
+                return oCursoRepository.save(oCursoEntityFromDatabase);
             }
-            if (oCursoEntity.getDescripcion() != null) {
-                oCursoEntityFromDatabase.setDescripcion(oCursoEntity.getDescripcion());
-            }
-            return oCursoRepository.save(oCursoEntityFromDatabase);
 
         }
 
