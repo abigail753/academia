@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.academia.entity.InscripcionEntity;
 import net.ausiasmarch.academia.exception.ResourceNotFoundException;
+import net.ausiasmarch.academia.exception.UnauthorizedAccessException;
 import net.ausiasmarch.academia.repository.InscripcionRepository;
 
 @Service
@@ -26,6 +27,9 @@ public class InscripcionService implements ServiceInterface<InscripcionEntity> {
     @Autowired
     CursoService oCursoService;
 
+    @Autowired
+    AuthService oAuthService;
+
     public Long randomCreate(Long cantidad) {
         for (int i = 0; i < cantidad; i++) {
             InscripcionEntity oInscripcionEntity = new InscripcionEntity();
@@ -41,17 +45,30 @@ public class InscripcionService implements ServiceInterface<InscripcionEntity> {
 
     // Cargar datos - Inscripcion
     public Page<InscripcionEntity> getPage(Pageable oPageable, Optional<String> filter) {
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para acceder a este listado.");
+        }
+
         return oInscripcionRepository.findAll(oPageable);
     }
 
     public InscripcionEntity get(Long id) {
+
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para acceder a este campo.");
+        }
+
         return oInscripcionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Inscripcion no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Inscripción no encontrada"));
     }
 
     // Cargar datos - Usuario
     public Page<InscripcionEntity> getPageXUsuario(Pageable oPageable, Optional<String> filter,
             Optional<Long> id_usuario) {
+
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para acceder a este listado.");
+        }
 
         if (id_usuario.isPresent()) {
             return oInscripcionRepository
@@ -65,6 +82,10 @@ public class InscripcionService implements ServiceInterface<InscripcionEntity> {
     public Page<InscripcionEntity> getPageXCurso(Pageable oPageable, Optional<String> filter,
             Optional<Long> id_curso) {
 
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para acceder a este listado.");
+        }
+
         if (id_curso.isPresent()) {
             return oInscripcionRepository
                     .findByCursoId(id_curso.get(), oPageable);
@@ -75,20 +96,31 @@ public class InscripcionService implements ServiceInterface<InscripcionEntity> {
 
     // Contar
     public Long count() {
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para acceder a este campo.");
+        }
         return oInscripcionRepository.count();
     }
 
     // Crear
     public InscripcionEntity create(InscripcionEntity oInscripcionEntity) {
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para crear inscripciones.");
+        }
         return oInscripcionRepository.save(oInscripcionEntity);
     }
 
     // Actualizar
     public InscripcionEntity update(InscripcionEntity oInscripcionEntity) {
-        InscripcionEntity oInscripcionEntityFromDatabase = oInscripcionRepository.findById(oInscripcionEntity.getId()).get();
-        
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para editar inscripciones.");
+        }
+
+        InscripcionEntity oInscripcionEntityFromDatabase = oInscripcionRepository.findById(oInscripcionEntity.getId())
+                .get();
+
         if (oInscripcionEntity.getUsuario() != null) {
-        oInscripcionEntityFromDatabase.setUsuario(oUsuarioService.get(oUsuarioService.randomSelection().getId()));
+            oInscripcionEntityFromDatabase.setUsuario(oUsuarioService.get(oUsuarioService.randomSelection().getId()));
         }
 
         if (oInscripcionEntity.getCurso() != null) {
@@ -100,6 +132,10 @@ public class InscripcionService implements ServiceInterface<InscripcionEntity> {
 
     // Eliminar
     public Long delete(Long id) {
+        if (!oAuthService.isAdmin()) {
+            throw new UnauthorizedAccessException("No tienes permisos para eliminar inscripciones.");
+        }
+
         oInscripcionRepository.deleteById(id);
         return 1L;
     }
