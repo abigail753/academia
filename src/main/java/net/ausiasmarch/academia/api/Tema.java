@@ -64,7 +64,7 @@ public class Tema {
     }
 
     // Crear
-    @PutMapping("")
+    @PostMapping("")
     public ResponseEntity<TemaEntity> create(@RequestBody TemaEntity oTemaEntity) {
         return new ResponseEntity<TemaEntity>(oTemaService.create(oTemaEntity), HttpStatus.OK);
     }
@@ -76,7 +76,7 @@ public class Tema {
     }
 
     // Editar
-    @PostMapping("")
+    @PutMapping("")
     public ResponseEntity<TemaEntity> update(@RequestBody TemaEntity oTemaEntity) {
         return new ResponseEntity<TemaEntity>(oTemaService.update(oTemaEntity), HttpStatus.OK);
     }

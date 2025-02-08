@@ -81,7 +81,7 @@ public class Calificacion {
     }
 
     // Crear
-    @PutMapping("")
+    @PostMapping("")
     public ResponseEntity<CalificacionEntity> create(@RequestBody CalificacionEntity oCalificacionEntity) {
         return new ResponseEntity<CalificacionEntity>(oCalificacionService.create(oCalificacionEntity), HttpStatus.OK);
     }
@@ -93,7 +93,7 @@ public class Calificacion {
     }
 
     // Editar
-    @PostMapping("")
+    @PutMapping("")
     public ResponseEntity<CalificacionEntity> update(@RequestBody CalificacionEntity oCalificacionEntity) {
         return new ResponseEntity<CalificacionEntity>(oCalificacionService.update(oCalificacionEntity), HttpStatus.OK);
     }

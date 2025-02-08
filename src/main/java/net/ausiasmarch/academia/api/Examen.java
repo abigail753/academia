@@ -53,7 +53,7 @@ public class Examen {
     }
 
     // Crear
-    @PutMapping("")
+    @PostMapping("")
     public ResponseEntity<ExamenEntity> create(@RequestBody ExamenEntity oExamenEntity) {
         return new ResponseEntity<ExamenEntity>(oExamenService.create(oExamenEntity), HttpStatus.OK);
     }
@@ -65,7 +65,7 @@ public class Examen {
     }
 
     // Editar
-    @PostMapping("")
+    @PutMapping("")
     public ResponseEntity<ExamenEntity> update(@RequestBody ExamenEntity oExamenEntity) {
         return new ResponseEntity<ExamenEntity>(oExamenService.update(oExamenEntity), HttpStatus.OK);
     }

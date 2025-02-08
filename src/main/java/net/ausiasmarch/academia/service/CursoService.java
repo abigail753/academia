@@ -89,9 +89,15 @@ public class CursoService implements ServiceInterface<CursoEntity> {
     }
 
     public CursoEntity get(Long id) {
-        return oCursoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado"));
-        // return oCursoRepository.findById(id).get();
+        //if (oAuthService.isAdmin()) {
+            return oCursoRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado"));
+        //}
+
+        //if (oAuthService.isProfesor()) {
+
+        //}
+
     }
 
     // Contar
@@ -108,30 +114,53 @@ public class CursoService implements ServiceInterface<CursoEntity> {
 
         if (oAuthService.isProfesor()) {
             oCursoRepository.save(oCursoEntity);
-            InscripcionEntity oInscripcionEntity = new InscripcionEntity(oAuthService.getUsuarioFromToken(), oCursoEntity);
+            InscripcionEntity oInscripcionEntity = new InscripcionEntity(oAuthService.getUsuarioFromToken(),
+                    oCursoEntity);
             oInscripcionRepository.save(oInscripcionEntity);
 
             return oCursoEntity;
         }
 
+        throw new UnauthorizedAccessException("No tienes permisos para crear cursos.");
 
-
-            throw new UnauthorizedAccessException("No tienes permisos para crear cursos.");
-        
     }
 
     // Actualizar
     public CursoEntity update(CursoEntity oCursoEntity) {
-        CursoEntity oCursoEntityFromDatabase = oCursoRepository.findById(oCursoEntity.getId()).get();
 
-        if (oCursoEntity.getNombre() != null) {
-            oCursoEntityFromDatabase.setNombre(oCursoEntity.getNombre());
+
+        if (oAuthService.isAdmin()) {
+            CursoEntity oCursoEntityFromDatabase = oCursoRepository.findById(oCursoEntity.getId()).get();
+            System.out.println("Esta entrando como admin");
+            if (oCursoEntity.getNombre() != null) {
+                oCursoEntityFromDatabase.setNombre(oCursoEntity.getNombre());
+            }
+
+            if (oCursoEntity.getDescripcion() != null) {
+                oCursoEntityFromDatabase.setDescripcion(oCursoEntity.getDescripcion());
+            }
+
+            return oCursoRepository.save(oCursoEntityFromDatabase);
         }
 
-        if (oCursoEntity.getDescripcion() != null) {
-            oCursoEntityFromDatabase.setDescripcion(oCursoEntity.getDescripcion());
+        if (oAuthService.isProfesor()) {
+            CursoEntity oCursoEntityFromDatabase = oCursoRepository.findById(oCursoEntity.getId()).get();
+
+            UsuarioEntity oProfesor = oAuthService.getUsuarioFromToken();
+    
+            // Si está inscrito, puede actualizarlo
+            if (oCursoEntity.getNombre() != null) {
+                oCursoEntityFromDatabase.setNombre(oCursoEntity.getNombre());
+            }
+            if (oCursoEntity.getDescripcion() != null) {
+                oCursoEntityFromDatabase.setDescripcion(oCursoEntity.getDescripcion());
+            }
+            return oCursoRepository.save(oCursoEntityFromDatabase);
+
         }
-        return oCursoRepository.save(oCursoEntityFromDatabase);
+
+        throw new UnauthorizedAccessException("No tienes permisos para crear cursos.");
+
     }
 
     // Eliminar

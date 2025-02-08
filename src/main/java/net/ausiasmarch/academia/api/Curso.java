@@ -55,13 +55,13 @@ public class Curso {
     }
 
     // Crear
-    @PutMapping("")
+    @PostMapping("")
     public ResponseEntity<CursoEntity> create(@RequestBody CursoEntity oCursoEntity) {
         return new ResponseEntity<CursoEntity>(oCursoService.create(oCursoEntity), HttpStatus.OK);
     }
 
     // Editar
-    @PostMapping("")
+    @PutMapping("")
     public ResponseEntity<CursoEntity> update(@RequestBody CursoEntity oCursoEntity) {
         return new ResponseEntity<CursoEntity>(oCursoService.update(oCursoEntity), HttpStatus.OK);
     }

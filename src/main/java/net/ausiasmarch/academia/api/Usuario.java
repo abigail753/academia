@@ -65,7 +65,7 @@ public class Usuario {
     }
 
     // Crear
-    @PutMapping("")
+    @PostMapping("")
     public ResponseEntity<UsuarioEntity> create(@RequestBody UsuarioEntity oUsuarioEntity) {
         return new ResponseEntity<UsuarioEntity>(oUsuarioService.create(oUsuarioEntity), HttpStatus.OK);
     }
@@ -77,7 +77,7 @@ public class Usuario {
     }
 
     // Editar
-    @PostMapping("")
+    @PutMapping("")
     public ResponseEntity<UsuarioEntity> update(@RequestBody UsuarioEntity oUsuarioEntity) {
         return new ResponseEntity<UsuarioEntity>(oUsuarioService.update(oUsuarioEntity), HttpStatus.OK);
     }

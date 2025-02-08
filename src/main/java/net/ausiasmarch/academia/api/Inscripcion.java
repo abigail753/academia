@@ -74,13 +74,13 @@ public class Inscripcion {
     }
 
     // Crear
-    @PutMapping("")
+    @PostMapping("")
     public ResponseEntity<InscripcionEntity> create(@RequestBody InscripcionEntity oInscripcionEntity) {
         return new ResponseEntity<InscripcionEntity>(oInscripcionService.create(oInscripcionEntity), HttpStatus.OK);
     }
 
     // Editar
-    @PostMapping("")
+    @PutMapping("")
     public ResponseEntity<InscripcionEntity> update(@RequestBody InscripcionEntity oInscripcionEntity) {
         return new ResponseEntity<InscripcionEntity>(oInscripcionService.update(oInscripcionEntity), HttpStatus.OK);
     }
