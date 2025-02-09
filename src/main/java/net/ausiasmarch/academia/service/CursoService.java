@@ -184,6 +184,7 @@ public class CursoService implements ServiceInterface<CursoEntity> {
         if (!oAuthService.isAdmin()) {
             throw new UnauthorizedAccessException("No tienes permisos para eliminar cursos.");
         }
+        
         oCursoRepository.deleteById(id);
         return 1L;
     }
