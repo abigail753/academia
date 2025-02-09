@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.academia.entity.InscripcionEntity;
+import net.ausiasmarch.academia.entity.UsuarioEntity;
 import net.ausiasmarch.academia.exception.ResourceNotFoundException;
 import net.ausiasmarch.academia.exception.UnauthorizedAccessException;
 import net.ausiasmarch.academia.repository.InscripcionRepository;
@@ -107,7 +108,18 @@ public class InscripcionService implements ServiceInterface<InscripcionEntity> {
         if (!oAuthService.isAdmin()) {
             throw new UnauthorizedAccessException("No tienes permisos para crear inscripciones.");
         }
-        return oInscripcionRepository.save(oInscripcionEntity);
+
+        UsuarioEntity oUsuarioEntity = oInscripcionEntity.getUsuario();
+
+        if (oUsuarioEntity.getTipousuario().equals("Profesor")) {
+            if (oInscripcionRepository.findByUsuarioId(oUsuarioEntity.getId()) > 0) {
+                throw new ResourceNotFoundException("Profesor ya inscrito en un curso.");
+            } else {
+                return oInscripcionRepository.save(oInscripcionEntity);
+            }
+        } else {
+            return oInscripcionRepository.save(oInscripcionEntity);
+        }
     }
 
     // Actualizar
