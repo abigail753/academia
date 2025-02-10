@@ -77,30 +77,27 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
         } else {
             if (filter.isPresent()) {
                 return oUsuarioRepository
-                        .findByTipousuarioAndNombreContainingOrTipousuarioAndApellidosContainingOrTipousuarioAndCorreoContaining (
-                                "Estudiante", filter.get(),
-                                "Estudiante", filter.get(),
-                                "Estudiante", filter.get(),
-                                oPageable);
-            } else { 
-                return oUsuarioRepository.findByTipousuario("Estudiante", oPageable);
+                        .findAlumnosByProfesor(oAuthService.getUsuarioFromToken().getId(), filter.get(), oPageable);
+            } else {
+                return oUsuarioRepository.findAlumnosByProfesor(oAuthService.getUsuarioFromToken().getId(), oPageable);
             }
         }
     }
 
     public UsuarioEntity get(Long id) {
-        if (!oAuthService.isAdminOrProfesor()) {
-            throw new UnauthorizedAccessException("No tienes permisos para ver los datos de usuarios.");
+        if (oAuthService.isAdmin()) {
+            return oUsuarioRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado."));
         }
 
-        UsuarioEntity oUsuarioEntity = oUsuarioRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
-
-        if (oAuthService.isProfesor() && !oUsuarioEntity.getTipousuario().equals("Estudiante")) {
-            throw new UnauthorizedAccessException("No tienes permisos para ver los datos de este usuario.");
+        if (oAuthService.isProfesor()) {
+            return oUsuarioRepository
+                    .findAlumnoByProfesor(oAuthService.getUsuarioFromToken().getId(), id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado."));
         }
 
-        return oUsuarioEntity;
+        throw new UnauthorizedAccessException("No tienes permisos para ver los datos de usuarios.");
+
     }
 
     public UsuarioEntity getByCorreo(String correo) {
@@ -117,10 +114,11 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
     public UsuarioEntity create(UsuarioEntity oUsuarioEntity) {
 
         if (!oAuthService.isAdmin()) {
-            throw new UnauthorizedAccessException("No tienes permisos para ver los datos de usuarios.");
+            throw new UnauthorizedAccessException("No tienes permisos para crear usuarios.");
         }
 
         oUsuarioEntity.setPassword(oHashService.hashPassword(oUsuarioEntity.getPassword()));
+
         return oUsuarioRepository.save(oUsuarioEntity);
     }
 
@@ -138,13 +136,9 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
     // Actualizar
     public UsuarioEntity update(UsuarioEntity oUsuarioEntity) {
 
-        if (!oAuthService.isAdminOrProfesor()) {
-            throw new UnauthorizedAccessException("No tienes permisos para editar usuarios.");
-        }
-
-        UsuarioEntity oUsuarioEntityFromDatabase = oUsuarioRepository.findById(oUsuarioEntity.getId()).get();
-
         if (oAuthService.isAdmin()) {
+            UsuarioEntity oUsuarioEntityFromDatabase = oUsuarioRepository.findById(oUsuarioEntity.getId()).get();
+
             if (oUsuarioEntity.getNombre() != null) {
                 oUsuarioEntityFromDatabase.setNombre(oUsuarioEntity.getNombre());
             }
@@ -169,7 +163,15 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
                 oUsuarioEntityFromDatabase.setTipousuario(oUsuarioEntity.getTipousuario());
             }
 
-        } else if (oAuthService.isProfesor()) {
+            return oUsuarioRepository.save(oUsuarioEntityFromDatabase);
+        }
+
+        if (oAuthService.isProfesor()) {
+
+            UsuarioEntity oUsuarioEntityFromDatabase = oUsuarioRepository
+                    .findAlumnoByProfesor(oAuthService.getUsuarioFromToken().getId(), oUsuarioEntity.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado."));
+
             if (oUsuarioEntity.getNombre() != null) {
                 oUsuarioEntityFromDatabase.setNombre(oUsuarioEntity.getNombre());
             }
@@ -177,8 +179,11 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
             if (oUsuarioEntity.getApellidos() != null) {
                 oUsuarioEntityFromDatabase.setApellidos(oUsuarioEntity.getApellidos());
             }
+
+            return oUsuarioRepository.save(oUsuarioEntityFromDatabase);
         }
-        return oUsuarioRepository.save(oUsuarioEntityFromDatabase);
+
+        throw new UnauthorizedAccessException("No tienes permisos para editar usuarios.");
 
     }
 
