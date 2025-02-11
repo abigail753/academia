@@ -23,11 +23,9 @@ public class CalificacionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @Digits(integer = 2, fraction = 2)
     private BigDecimal calificacion;
 
-    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate fecha_evaluacion;
 
