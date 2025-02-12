@@ -89,17 +89,13 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
 
     public ExamenEntity get(Long id) {
 
-        if (oAuthService.isAdmin()) {
-             return oExamenRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado"));
-        }
-
-        if (oAuthService.isProfesor()) {
-            
+        if (oAuthService.isAdminOrProfesor()) {
+            return oExamenRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado"));
         }
 
         throw new UnauthorizedAccessException("No tienes permisos para ver este examen.");
-       
+
     }
 
     // Contar
@@ -118,14 +114,18 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
 
     // Eliminar
     public Long delete(Long id) {
-        if (oAuthService.isAdmin()){
+        if (oAuthService.isAdmin()) {
             oExamenRepository.deleteById(id);
             return 1L;
         }
 
-        if (oAuthService.isProfesor()){
+        if (oAuthService.isProfesor()) {
 
-            
+            oExamenRepository.findExamenById(id, oAuthService.getUsuarioFromToken().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado"));
+
+            oExamenRepository.deleteById(id);
+            return 1L;
         }
 
         throw new UnauthorizedAccessException("No tienes permisos para eliminar examenes.");
@@ -134,19 +134,37 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
     // Actualizar
     public ExamenEntity update(ExamenEntity oExamenEntity) {
 
-        if (!oAuthService.isAdminOrProfesor()) {
-            throw new UnauthorizedAccessException("No tienes permisos para editar examenes.");
+        if (oAuthService.isAdmin()) {
+            ExamenEntity oExamenEntityFromDatabase = oExamenRepository.findById(oExamenEntity.getId()).get();
+
+            if (oExamenEntity.getNombre() != null) {
+                oExamenEntityFromDatabase.setNombre(oExamenEntity.getNombre());
+            }
+
+            if (oExamenEntity.getNum_preguntas() != null) {
+                oExamenEntityFromDatabase.setNum_preguntas(oExamenEntity.getNum_preguntas());
+            }
+            return oExamenRepository.save(oExamenEntityFromDatabase);
         }
 
-        ExamenEntity oExamenEntityFromDatabase = oExamenRepository.findById(oExamenEntity.getId()).get();
-        if (oExamenEntity.getNombre() != null) {
-            oExamenEntityFromDatabase.setNombre(oExamenEntity.getNombre());
+        if (oAuthService.isProfesor()) {
+            ExamenEntity oExamenEntityFromDatabase = oExamenRepository
+                    .findExamenById(oExamenEntity.getId(), oAuthService.getUsuarioFromToken().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado"));
+
+            if (oExamenEntity.getNombre() != null) {
+                oExamenEntityFromDatabase.setNombre(oExamenEntity.getNombre());
+            }
+
+            if (oExamenEntity.getNum_preguntas() != null) {
+                oExamenEntityFromDatabase.setNum_preguntas(oExamenEntity.getNum_preguntas());
+            }
+            return oExamenRepository.save(oExamenEntityFromDatabase);
+
         }
 
-        if (oExamenEntity.getNum_preguntas() != null) {
-            oExamenEntityFromDatabase.setNum_preguntas(oExamenEntity.getNum_preguntas());
-        }
-        return oExamenRepository.save(oExamenEntityFromDatabase);
+        throw new UnauthorizedAccessException("No tienes permisos para actualizar examenes.");
+
     }
 
     // Random Selection
