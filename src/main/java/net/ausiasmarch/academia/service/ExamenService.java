@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.academia.entity.ExamenEntity;
 import net.ausiasmarch.academia.exception.ResourceNotFoundException;
+import net.ausiasmarch.academia.exception.UnauthorizedAccessException;
+import net.ausiasmarch.academia.repository.CalificacionRepository;
 import net.ausiasmarch.academia.repository.ExamenRepository;
 
 @Service
@@ -18,10 +20,17 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
     ExamenRepository oExamenRepository;
 
     @Autowired
+    CalificacionRepository oCalificacionRepository;
+
+    @Autowired
     RandomService oRandomService;
 
+    @Autowired
+    AuthService oAuthService;
+
     // Cargar datos aleatorios
-    private String[] arrNombres = { "Evaluación Final",
+    private String[] arrNombres = {
+            "Evaluación Final",
             "Examen de Conocimientos Generales",
             "Prueba de Comprensión de Lectura",
             "Examen de Matemáticas Avanzadas",
@@ -40,7 +49,8 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
             "Examen de Programación en JavaScript",
             "Evaluación de Ética y Ciudadanía",
             "Prueba de Análisis de Datos",
-            "Examen de Diseño Gráfico", };
+            "Examen de Diseño Gráfico"
+    };
 
     public Long randomCreate(Long cantidad) {
         for (int i = 0; i < cantidad; i++) {
@@ -55,19 +65,44 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
     // Cargar datos
     public Page<ExamenEntity> getPage(Pageable oPageable, Optional<String> filter) {
 
-        if (filter.isPresent()) {
-            return oExamenRepository
-                    .findByNombreContaining(
-                            filter.get(), oPageable);
-        } else {
-            return oExamenRepository.findAll(oPageable);
+        if (oAuthService.isAdmin()) {
+            if (filter.isPresent()) {
+                return oExamenRepository
+                        .findByNombreContaining(
+                                filter.get(), oPageable);
+            } else {
+                return oExamenRepository.findAll(oPageable);
+            }
         }
+
+        if (oAuthService.isProfesor()) {
+            if (filter.isPresent()) {
+                return oExamenRepository.findExamenesByProfesorAndNombre(oAuthService.getUsuarioFromToken().getId(),
+                        filter.get(), oPageable);
+            }
+            return oExamenRepository.findExamenesByProfesor(oAuthService.getUsuarioFromToken().getId(), oPageable);
+        }
+
+        throw new UnauthorizedAccessException("No tienes permisos para acceder a este listado.");
+
     }
 
     public ExamenEntity get(Long id) {
-        return oExamenRepository.findById(id)
+
+        if (oAuthService.isAdmin()) {
+             return oExamenRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado"));
-        // return oExamenRepository.findById(id).get();
+        }
+
+        if (oAuthService.isProfesor()) {
+            if (oExamenRepository.existsExamenByProfesorAndId(oAuthService.getUsuarioFromToken().getId(), id) > 0) {
+                return oExamenRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado"));
+            }
+        }
+
+        throw new UnauthorizedAccessException("No tienes permisos para ver este examen.");
+       
     }
 
     // Contar
@@ -77,17 +112,40 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
 
     // Crear
     public ExamenEntity create(ExamenEntity oExamenEntity) {
+        if (!oAuthService.isAdminOrProfesor()) {
+            throw new UnauthorizedAccessException("No tienes permisos para crear examenes.");
+        }
+
         return oExamenRepository.save(oExamenEntity);
     }
 
     // Eliminar
     public Long delete(Long id) {
-        oExamenRepository.deleteById(id);
-        return 1L;
+        if (oAuthService.isAdmin()){
+            oExamenRepository.deleteById(id);
+            return 1L;
+        }
+
+        if (oAuthService.isProfesor()){
+            if (oExamenRepository.existsExamenByProfesorAndId(oAuthService.getUsuarioFromToken().getId(), id) > 0){
+                oExamenRepository.deleteById(id);
+
+                oCalificacionRepository.deleteCalificacionesByExamenId((Long)id);
+                
+                return 1L;
+            }
+        }
+
+        throw new UnauthorizedAccessException("No tienes permisos para eliminar examenes.");
     }
 
     // Actualizar
     public ExamenEntity update(ExamenEntity oExamenEntity) {
+
+        if (!oAuthService.isAdminOrProfesor()) {
+            throw new UnauthorizedAccessException("No tienes permisos para editar examenes.");
+        }
+
         ExamenEntity oExamenEntityFromDatabase = oExamenRepository.findById(oExamenEntity.getId()).get();
         if (oExamenEntity.getNombre() != null) {
             oExamenEntityFromDatabase.setNombre(oExamenEntity.getNombre());

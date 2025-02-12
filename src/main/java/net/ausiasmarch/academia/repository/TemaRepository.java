@@ -16,15 +16,6 @@ public interface TemaRepository extends JpaRepository<TemaEntity, Long> {
         @Query(value = "SELECT * FROM tema WHERE id_curso=:id_curso", nativeQuery = true)
         Page<TemaEntity> findByCursoId(Long id_curso, Pageable oPageable);
 
-        // Lista los temas que tiene X profesor - Menos eficiente, tarda más
-        /*
-         * @Query(value = "SELECT t.* FROM tema t " +
-         * "JOIN curso c ON t.id_curso = c.id " +
-         * "JOIN inscripcion i ON c.id = i.id_curso " +
-         * "WHERE i.id_usuario = :id_usuario", nativeQuery = true)
-         * Page<TemaEntity> findTemasByUsuarioId(@Param("id_usuario") Long id_usuario,
-         * Pageable pageable);
-         */
 
         @Query(value = "SELECT * FROM tema WHERE id_curso IN (SELECT id_curso FROM inscripcion WHERE id_usuario = :id_usuario)", nativeQuery = true)
         Page<TemaEntity> findTemasByUsuarioId(@Param("id_usuario") Long id_usuario, Pageable pageable);
