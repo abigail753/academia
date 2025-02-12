@@ -80,7 +80,7 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
         }
 
         if (oAuthService.isProfesor()) {
-            
+            return oCalificacionRepository.findCalificacionesAlumnos (oAuthService.getUsuarioFromToken().getId(), oPageable);
         }
         
         throw new UnauthorizedAccessException("No tienes permisos para acceder a este listado.");

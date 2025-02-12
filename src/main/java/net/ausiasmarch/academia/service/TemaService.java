@@ -105,7 +105,8 @@ public class TemaService implements ServiceInterface<TemaEntity> {
                 return oTemaRepository.findById(id)
                         .orElseThrow(() -> new ResourceNotFoundException("Tema no encontrado."));
             } else {
-                throw new UnauthorizedAccessException("No puedes ver este tema porque no pertenece a ninguno de tus cursos.");
+                throw new UnauthorizedAccessException(
+                        "No puedes ver este tema porque no pertenece a ninguno de tus cursos.");
             }
         }
 
@@ -124,6 +125,10 @@ public class TemaService implements ServiceInterface<TemaEntity> {
             throw new ResourceNotFoundException("Usuario no encontrado");
         }
     }
+
+    // Cargar datos por Examen
+    public Page<TemaEntity> getPageXExamen(Pageable oPageable, Long idExamen, Long idProfesor) {
+        return oTemaRepository.findByExamen(oPageable, idExamen, idProfesor);}
 
     // Contar
     public Long count() {
@@ -162,7 +167,7 @@ public class TemaService implements ServiceInterface<TemaEntity> {
     // Actualizar
     public TemaEntity update(TemaEntity oTemaEntity) {
         if (oAuthService.isAdmin()) {
-            
+
             TemaEntity oTemaEntityFromDatabase = oTemaRepository.findById(oTemaEntity.getId()).get();
 
             if (oTemaEntity.getTitulo() != null) {

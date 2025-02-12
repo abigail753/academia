@@ -65,7 +65,7 @@ public class Calificacion {
             Pageable oPageable,
             @RequestParam Optional<String> filter,
             @PathVariable Optional<Long> id) {
-        return new ResponseEntity<Page<CalificacionEntity>>(oCalificacionService.getPageXExamen(oPageable, filter, id),
+        return new ResponseEntity<Page<CalificacionEntity>>(oCalificacionService.getPageXTema(oPageable, filter, id),
                 HttpStatus.OK);
     }
 

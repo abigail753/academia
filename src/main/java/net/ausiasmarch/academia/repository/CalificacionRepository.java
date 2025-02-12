@@ -26,16 +26,7 @@ public interface CalificacionRepository  extends JpaRepository<CalificacionEntit
     void deleteCalificacionesByExamenId(Long id_examen);
 
     // Page para profesores
-    /*  @Query(value = "SELECT c.* " +
-                   "FROM calificacion c " +
-                   "INNER JOIN tema t ON c.id_tema = t.id " +
-                   "INNER JOIN curso cu ON t.id_curso = cu.id " +
-                   "WHERE cu.id IN ( " +
-                   "    SELECT i.id_curso " +
-                   "    FROM inscripcion i " +
-                   "    WHERE i.id_usuario = :idUsuario " +
-                   ") " +
-                   "AND c.id_usuario <> :idUsuario", 
-           nativeQuery = true)
-    List<Calificacion> findCalificacionesByInscripcionExcludingUser(@Param("idUsuario") Long idUsuario); */
+    @Query(value = "SELECT c.* FROM calificacion c INNER JOIN tema t ON c.id_tema = t.id INNER JOIN curso cu ON t.id_curso = cu.id WHERE cu.id IN (SELECT i.id_curso FROM inscripcion i WHERE i.id_usuario = :idUsuario AND c.id_usuario <> :idUsuario)" , nativeQuery = true)
+    Page<CalificacionEntity>findCalificacionesAlumnos(Long idUsuario, Pageable oPageable);
+
 }
