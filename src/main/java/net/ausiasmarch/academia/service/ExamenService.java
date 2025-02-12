@@ -95,10 +95,7 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
         }
 
         if (oAuthService.isProfesor()) {
-            if (oExamenRepository.existsExamenByProfesorAndId(oAuthService.getUsuarioFromToken().getId(), id) > 0) {
-                return oExamenRepository.findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado"));
-            }
+            
         }
 
         throw new UnauthorizedAccessException("No tienes permisos para ver este examen.");
@@ -127,13 +124,8 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
         }
 
         if (oAuthService.isProfesor()){
-            if (oExamenRepository.existsExamenByProfesorAndId(oAuthService.getUsuarioFromToken().getId(), id) > 0){
-                oExamenRepository.deleteById(id);
 
-                oCalificacionRepository.deleteCalificacionesByExamenId((Long)id);
-                
-                return 1L;
-            }
+            
         }
 
         throw new UnauthorizedAccessException("No tienes permisos para eliminar examenes.");

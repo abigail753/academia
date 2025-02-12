@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.academia.entity.CalificacionEntity;
 import net.ausiasmarch.academia.exception.ResourceNotFoundException;
+import net.ausiasmarch.academia.exception.UnauthorizedAccessException;
 import net.ausiasmarch.academia.repository.CalificacionRepository;
 
 @Service
@@ -30,6 +31,9 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
 
     @Autowired
     TemaService oTemaService;
+
+    @Autowired
+    AuthService oAuthService;
 
     private BigDecimal[] arrCalificaciones = {
             new BigDecimal("5.0"),
@@ -71,7 +75,16 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
 
     // Cargar datos - Calificacion
     public Page<CalificacionEntity> getPage(Pageable oPageable, Optional<String> filter) {
-        return oCalificacionRepository.findAll(oPageable);
+        if (oAuthService.isAdmin()) {
+            return oCalificacionRepository.findAll(oPageable);
+        }
+
+        if (oAuthService.isProfesor()) {
+            
+        }
+        
+        throw new UnauthorizedAccessException("No tienes permisos para acceder a este listado.");
+        
     }
 
     // Cargar datos - Usuario
@@ -123,6 +136,14 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
 
     // Crear
     public CalificacionEntity create(CalificacionEntity oCalificacionEntity) {
+        if (oAuthService.isAdmin()) {
+
+        }
+
+        if (oAuthService.isProfesor()) {
+
+        }
+
         return oCalificacionRepository.save(oCalificacionEntity);
     }
 
