@@ -80,11 +80,12 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
         }
 
         if (oAuthService.isProfesor()) {
-            return oCalificacionRepository.findCalificacionesAlumnos (oAuthService.getUsuarioFromToken().getId(), oPageable);
+            return oCalificacionRepository.findCalificacionesAlumnos(oAuthService.getUsuarioFromToken().getId(),
+                    oPageable);
         }
-        
+
         throw new UnauthorizedAccessException("No tienes permisos para acceder a este listado.");
-        
+
     }
 
     // Cargar datos - Usuario
@@ -136,49 +137,60 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
 
     // Crear
     public CalificacionEntity create(CalificacionEntity oCalificacionEntity) {
-        if (oAuthService.isAdmin()) {
+        if (oAuthService.isAdminOrProfesor()) {
+            return oCalificacionRepository.save(oCalificacionEntity);
+        }
 
+        throw new UnauthorizedAccessException("No tienes permisos para crear calificaciones ");
+    }
+
+    // Actualizar
+    public CalificacionEntity update(CalificacionEntity oCalificacionEntity) {
+
+        if (oAuthService.isAdminOrProfesor()) {
+            CalificacionEntity oCalificacionEntityFromDatabase = oCalificacionRepository
+                    .findById(oCalificacionEntity.getId()).get();
+
+            if (oCalificacionEntity.getCalificacion() != null) {
+                oCalificacionEntityFromDatabase.setCalificacion(oCalificacionEntity.getCalificacion());
+            }
+
+            if (oCalificacionEntity.getFecha_evaluacion() != null) {
+                oCalificacionEntityFromDatabase.setFecha_evaluacion(oCalificacionEntity.getFecha_evaluacion());
+            }
+
+            if (oCalificacionEntity.getUsuario() != null) {
+                oCalificacionEntityFromDatabase
+                        .setUsuario(oUsuarioService.get(oUsuarioService.randomSelection().getId()));
+            }
+
+            if (oCalificacionEntity.getExamen() != null) {
+                oCalificacionEntityFromDatabase
+                        .setExamen(oExamenService.get(oUsuarioService.randomSelection().getId()));
+            }
+
+            if (oCalificacionEntity.getTema() != null) {
+                oCalificacionEntityFromDatabase.setTema(oTemaService.get(oUsuarioService.randomSelection().getId()));
+            }
+
+            return oCalificacionRepository.save(oCalificacionEntityFromDatabase);
         }
 
         if (oAuthService.isProfesor()) {
 
         }
 
-        return oCalificacionRepository.save(oCalificacionEntity);
-    }
+        throw new UnauthorizedAccessException("No tienes permisos para editar calificaciones.");
 
-    // Actualizar
-    public CalificacionEntity update(CalificacionEntity oCalificacionEntity) {
-        CalificacionEntity oCalificacionEntityFromDatabase = oCalificacionRepository
-                .findById(oCalificacionEntity.getId()).get();
-
-        if (oCalificacionEntity.getCalificacion() != null) {
-            oCalificacionEntityFromDatabase.setCalificacion(oCalificacionEntity.getCalificacion());
-        }
-
-        if (oCalificacionEntity.getFecha_evaluacion() != null) {
-            oCalificacionEntityFromDatabase.setFecha_evaluacion(oCalificacionEntity.getFecha_evaluacion());
-        }
-
-        if (oCalificacionEntity.getUsuario() != null) {
-            oCalificacionEntityFromDatabase.setUsuario(oUsuarioService.get(oUsuarioService.randomSelection().getId()));
-        }
-
-        if (oCalificacionEntity.getExamen() != null) {
-            oCalificacionEntityFromDatabase.setExamen(oExamenService.get(oUsuarioService.randomSelection().getId()));
-        }
-
-        if (oCalificacionEntity.getTema() != null) {
-            oCalificacionEntityFromDatabase.setTema(oTemaService.get(oUsuarioService.randomSelection().getId()));
-        }
-
-        return oCalificacionRepository.save(oCalificacionEntityFromDatabase);
     }
 
     // Eliminar
     public Long delete(Long id) {
-        oCalificacionRepository.deleteById(id);
-        return 1L;
+        if (oAuthService.isAdminOrProfesor()) {
+            oCalificacionRepository.deleteById(id);
+            return 1L;
+        }
+        throw new UnauthorizedAccessException("No tienes permisos para eliminar calificaciones.");
     }
 
     // Random Selection

@@ -66,6 +66,7 @@ public class CursoService implements ServiceInterface<CursoEntity> {
 
     // Cargar datos
     public Page<CursoEntity> getPage(Pageable oPageable, Optional<String> filter) {
+
         if (oAuthService.isAdmin()) {
             if (filter.isPresent()) {
                 return oCursoRepository
@@ -74,18 +75,19 @@ public class CursoService implements ServiceInterface<CursoEntity> {
             } else {
                 return oCursoRepository.findAll(oPageable);
             }
-        } else if (oAuthService.isProfesor()) {
+        }
 
-            UsuarioEntity oProfesor = oAuthService.getUsuarioFromToken();
+        if (oAuthService.isProfesor() || oAuthService.isEstudiante()) {
+            UsuarioEntity oUsuario = oAuthService.getUsuarioFromToken();
 
             if (filter.isPresent()) {
-                return oCursoRepository.findByNombreContainingOrDescripcion(oProfesor.getId(), filter.get(), oPageable);
+                return oCursoRepository.findByNombreContainingOrDescripcion(oUsuario.getId(), filter.get(), oPageable);
             } else {
-                return oCursoRepository.findByProfesor(oProfesor.getId(), oPageable);
+                return oCursoRepository.findByProfesor(oUsuario.getId(), oPageable);
             }
-        } else {
-            throw new UnauthorizedAccessException("No tienes permisos para todo el listado de cursos.");
         }
+
+        throw new UnauthorizedAccessException("No tienes permisos para acceder a este listado.");
     }
 
     public CursoEntity get(Long id) {
@@ -95,13 +97,14 @@ public class CursoService implements ServiceInterface<CursoEntity> {
                     .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado"));
         }
 
-        if (oAuthService.isProfesor()) {
+        if (oAuthService.isProfesor() || oAuthService.isEstudiante()) {
             UsuarioEntity oUsuarioEntity = oAuthService.getUsuarioFromToken();
 
             CursoEntity oCursoEntity = oCursoRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado"));
 
-            if (oInscripcionRepository.findByUsuarioIdAndCursoId(oUsuarioEntity.getId(), oCursoEntity.getId()) == null) {
+            if (oInscripcionRepository.findByUsuarioIdAndCursoId(oUsuarioEntity.getId(),
+                    oCursoEntity.getId()) == null) {
                 throw new UnauthorizedAccessException("No tienes permisos para ver este curso");
             } else {
                 return oCursoEntity;
@@ -184,7 +187,7 @@ public class CursoService implements ServiceInterface<CursoEntity> {
         if (!oAuthService.isAdmin()) {
             throw new UnauthorizedAccessException("No tienes permisos para eliminar cursos.");
         }
-        
+
         oCursoRepository.deleteById(id);
         return 1L;
     }

@@ -81,7 +81,7 @@ public class TemaService implements ServiceInterface<TemaEntity> {
             }
         }
 
-        if (oAuthService.isProfesor()) {
+        if (oAuthService.isProfesor()){
             if (filter.isPresent()) {
                 return oTemaRepository
                         .findTemasByUsuarioIdAndFilter(oAuthService.getUsuarioFromToken().getId(), filter.get(),
