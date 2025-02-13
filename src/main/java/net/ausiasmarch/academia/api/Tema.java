@@ -25,7 +25,7 @@ import net.ausiasmarch.academia.service.TemaService;
 @RestController
 @RequestMapping("/tema")
 public class Tema {
-    
+
     @Autowired
     TemaService oTemaService;
 
@@ -53,14 +53,13 @@ public class Tema {
     }
 
     @GetMapping("/xexamen/{idExamen}/{idProfesor}")
-public ResponseEntity<Page<TemaEntity>> getPageXExamen(
-        Pageable oPageable,
-        @PathVariable Long idExamen,
-        @PathVariable Long idProfesor) {
-    System.out.println(idExamen + " " + idProfesor);
-    return new ResponseEntity<>(oTemaService.getPageXExamen(oPageable, idExamen, idProfesor), HttpStatus.OK);
-}
-
+    public ResponseEntity<Page<TemaEntity>> getPageXExamen(
+            Pageable oPageable,
+            @PathVariable Long idExamen,
+            @PathVariable Long idProfesor) {
+        System.out.println(idExamen + " " + idProfesor);
+        return new ResponseEntity<>(oTemaService.getPageXExamen(oPageable, idExamen, idProfesor), HttpStatus.OK);
+    }
 
     // Cargar un tema
     @GetMapping("/{id}")
@@ -90,6 +89,5 @@ public ResponseEntity<Page<TemaEntity>> getPageXExamen(
     public ResponseEntity<TemaEntity> update(@RequestBody TemaEntity oTemaEntity) {
         return new ResponseEntity<TemaEntity>(oTemaService.update(oTemaEntity), HttpStatus.OK);
     }
-
 
 }
