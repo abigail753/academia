@@ -84,6 +84,11 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
                     oPageable);
         }
 
+        if (oAuthService.isEstudiante()) {
+            return oCalificacionRepository.findByUsuarioId(oAuthService.getUsuarioFromToken().getId(),
+                    oPageable);
+        }
+
         throw new UnauthorizedAccessException("No tienes permisos para acceder a este listado.");
 
     }

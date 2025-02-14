@@ -61,6 +61,15 @@ public class Tema {
         return new ResponseEntity<>(oTemaService.getPageXExamen(oPageable, idExamen, idProfesor), HttpStatus.OK);
     }
 
+    @GetMapping("/xalumno/{idCurso}/{idAlumno}")
+    public ResponseEntity<Page<TemaEntity>> getPageXAlumno(
+            Pageable oPageable,
+            @PathVariable Long idCurso,
+            @PathVariable Long idAlumno) {
+        return new ResponseEntity<Page<TemaEntity>>(oTemaService.getPageXAlumno(oPageable, idCurso, idAlumno),
+                HttpStatus.OK);
+    }
+
     // Cargar un tema
     @GetMapping("/{id}")
     public ResponseEntity<TemaEntity> getTema(@PathVariable Long id) {

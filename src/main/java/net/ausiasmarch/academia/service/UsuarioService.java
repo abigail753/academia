@@ -61,10 +61,6 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
     // Cargar datos
     public Page<UsuarioEntity> getPage(Pageable oPageable, Optional<String> filter) {
 
-        if (!oAuthService.isAdminOrProfesor()) {
-            throw new UnauthorizedAccessException("No tienes permisos para ver los datos de usuarios.");
-        }
-
         if (oAuthService.isAdmin()) {
             if (filter.isPresent()) {
                 return oUsuarioRepository
@@ -74,7 +70,9 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
             } else {
                 return oUsuarioRepository.findAll(oPageable);
             }
-        } else {
+        }
+
+        if (oAuthService.isProfesor()) {
             if (filter.isPresent()) {
                 return oUsuarioRepository
                         .findAlumnosByProfesor(oAuthService.getUsuarioFromToken().getId(), filter.get(), oPageable);
@@ -82,6 +80,9 @@ public class UsuarioService implements ServiceInterface<UsuarioEntity> {
                 return oUsuarioRepository.findAlumnosByProfesor(oAuthService.getUsuarioFromToken().getId(), oPageable);
             }
         }
+
+        throw new UnauthorizedAccessException("No tienes permisos para ver los datos de usuarios.");
+
     }
 
     public UsuarioEntity get(Long id) {

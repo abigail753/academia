@@ -94,6 +94,11 @@ public class TemaService implements ServiceInterface<TemaEntity> {
         throw new UnauthorizedAccessException("No tienes permisos para generar la lista de temas.");
     }
 
+    // Cargar temas para Alumno
+    public Page<TemaEntity>getPageXAlumno(Pageable oPageable, Long id_curso, Long id_alumno) {
+        return oTemaRepository.findByCursoAndAlumno(oPageable, id_curso, id_alumno);
+    }
+
     public TemaEntity get(Long id) {
         if (oAuthService.isAdmin()) {
             return oTemaRepository.findById(id)
