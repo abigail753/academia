@@ -5,6 +5,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -28,18 +30,25 @@ public class ExamenEntity {
     @OneToMany(mappedBy = "examen", fetch = FetchType.LAZY)
     private java.util.List<CalificacionEntity> calificaciones;
 
+    @NotNull
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
+    @JoinColumn(name = "id_tema")
+    private TemaEntity tema;
+
     public ExamenEntity(){
     }
 
-    public ExamenEntity(String nombre, Long num_preguntas) {
+    public ExamenEntity(String nombre, Long num_preguntas, TemaEntity tema) {
         this.nombre = nombre;
         this.num_preguntas = num_preguntas;
+        this.tema = tema;
     }
 
-    public ExamenEntity(Long id, String nombre, Long num_preguntas) {
+    public ExamenEntity(Long id, String nombre, Long num_preguntas, TemaEntity tema) {
         this.id = id;
         this.nombre = nombre;
         this.num_preguntas = num_preguntas;
+        this.tema = tema;
     }
 
     public Long getId() {
@@ -68,6 +77,14 @@ public class ExamenEntity {
     
     public int getCalificaciones() {
         return calificaciones.size();
+    }
+
+    public TemaEntity getTema() {
+        return tema;
+    }
+
+    public void setTema(TemaEntity tema) {
+        this.tema = tema;
     }
 
 }

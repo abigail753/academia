@@ -34,7 +34,7 @@ public class TemaEntity {
     private CursoEntity curso;
 
     @OneToMany(mappedBy = "tema", fetch = FetchType.LAZY)
-    private java.util.List<CalificacionEntity> calificaciones;
+    private java.util.List<ExamenEntity> examenes;
 
     public TemaEntity() {
     }
@@ -85,7 +85,7 @@ public class TemaEntity {
     }
 
     public int getCalificaciones() {
-        return calificaciones.size();
+        return examenes.size();
     }
 
 }

@@ -39,31 +39,24 @@ public class CalificacionEntity {
     @JoinColumn(name = "id_examen")
     private ExamenEntity examen;
 
-    @NotNull
-    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
-    @JoinColumn(name = "id_tema")
-    private TemaEntity tema;
-
     public CalificacionEntity() {
     }
 
     public CalificacionEntity(BigDecimal calificacion, LocalDate fecha_evaluacion, UsuarioEntity usuario,
-            ExamenEntity examen, TemaEntity tema) {
+            ExamenEntity examen) {
         this.calificacion = calificacion;
         this.fecha_evaluacion = fecha_evaluacion;
         this.usuario = usuario;
         this.examen = examen;
-        this.tema = tema;
     }
 
     public CalificacionEntity(Long id, BigDecimal calificacion, LocalDate fecha_evaluacion, UsuarioEntity usuario,
-            ExamenEntity examen, TemaEntity tema) {
+            ExamenEntity examen) {
         this.id = id;
         this.calificacion = calificacion;
         this.fecha_evaluacion = fecha_evaluacion;
         this.usuario = usuario;
         this.examen = examen;
-        this.tema = tema;
     }
 
     public Long getId() {
@@ -102,17 +95,8 @@ public class CalificacionEntity {
         return examen;
     }
 
-
     public void setExamen(ExamenEntity examen) {
         this.examen = examen;
-    }
-
-    public TemaEntity getTema() {
-        return tema;
-    }
-
-    public void setTema(TemaEntity tema) {
-        this.tema = tema;
     }
 
 }
