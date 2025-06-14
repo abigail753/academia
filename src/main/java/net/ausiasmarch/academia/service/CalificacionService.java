@@ -163,13 +163,11 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
             }
 
             if (oCalificacionEntity.getUsuario() != null) {
-                oCalificacionEntityFromDatabase
-                        .setUsuario(oUsuarioService.get(oUsuarioService.randomSelection().getId()));
+                oCalificacionEntityFromDatabase.setUsuario(oCalificacionEntity.getUsuario());
             }
 
             if (oCalificacionEntity.getExamen() != null) {
-                oCalificacionEntityFromDatabase
-                        .setExamen(oExamenService.get(oUsuarioService.randomSelection().getId()));
+                oCalificacionEntityFromDatabase.setExamen(oCalificacionEntity.getExamen());
             }
 
 
