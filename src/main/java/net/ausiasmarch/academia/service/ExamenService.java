@@ -144,6 +144,11 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
             if (oExamenEntity.getNum_preguntas() != null) {
                 oExamenEntityFromDatabase.setNum_preguntas(oExamenEntity.getNum_preguntas());
             }
+
+            if (oExamenEntity.getTema() != null) {
+                oExamenEntityFromDatabase.setTema(oExamenEntity.getTema());
+            }
+
             return oExamenRepository.save(oExamenEntityFromDatabase);
         }
 
@@ -159,6 +164,11 @@ public class ExamenService implements ServiceInterface<ExamenEntity> {
             if (oExamenEntity.getNum_preguntas() != null) {
                 oExamenEntityFromDatabase.setNum_preguntas(oExamenEntity.getNum_preguntas());
             }
+
+            if (oExamenEntity.getTema() != null) {
+                oExamenEntityFromDatabase.setTema(oExamenEntity.getTema());
+            }
+
             return oExamenRepository.save(oExamenEntityFromDatabase);
 
         }

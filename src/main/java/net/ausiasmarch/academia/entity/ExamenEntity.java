@@ -38,17 +38,17 @@ public class ExamenEntity {
     public ExamenEntity(){
     }
 
-    public ExamenEntity(String nombre, Long num_preguntas, TemaEntity tema) {
+    public ExamenEntity(String nombre, Long num_preguntas, TemaEntity id_tema) {
         this.nombre = nombre;
         this.num_preguntas = num_preguntas;
-        this.tema = tema;
+        this.tema = id_tema;
     }
 
-    public ExamenEntity(Long id, String nombre, Long num_preguntas, TemaEntity tema) {
+    public ExamenEntity(Long id, String nombre, Long num_preguntas, TemaEntity id_tema) {
         this.id = id;
         this.nombre = nombre;
         this.num_preguntas = num_preguntas;
-        this.tema = tema;
+        this.tema = id_tema;
     }
 
     public Long getId() {
