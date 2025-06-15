@@ -1,5 +1,8 @@
 package net.ausiasmarch.academia.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,11 +23,14 @@ public class InscripcionEntity {
     @NotNull
     @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "id_usuario")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UsuarioEntity usuario;
 
     @NotNull
     @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "id_curso")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+
     private CursoEntity curso;
     
 

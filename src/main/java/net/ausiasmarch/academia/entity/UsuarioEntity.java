@@ -2,6 +2,7 @@ package net.ausiasmarch.academia.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -40,10 +41,11 @@ public class UsuarioEntity {
 
     private String tipousuario;
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    
     private java.util.List<InscripcionEntity> inscripciones;
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private java.util.List<CalificacionEntity> calificaciones;
 
     public UsuarioEntity() {
