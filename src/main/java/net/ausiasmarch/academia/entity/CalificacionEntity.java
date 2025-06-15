@@ -3,6 +3,9 @@ package net.ausiasmarch.academia.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Entity;
@@ -32,11 +35,13 @@ public class CalificacionEntity {
     @NotNull
     @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "id_usuario")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UsuarioEntity usuario;
 
     @NotNull
     @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "id_examen")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ExamenEntity examen;
 
     public CalificacionEntity() {

@@ -1,5 +1,9 @@
 package net.ausiasmarch.academia.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -31,9 +35,10 @@ public class TemaEntity {
     @NotNull
     @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "id_curso")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private CursoEntity curso;
 
-    @OneToMany(mappedBy = "tema", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tema", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private java.util.List<ExamenEntity> examenes;
 
     public TemaEntity() {
