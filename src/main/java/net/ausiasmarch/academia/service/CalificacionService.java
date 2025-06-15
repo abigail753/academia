@@ -144,7 +144,7 @@ public class CalificacionService implements ServiceInterface<CalificacionEntity>
             return oCalificacionRepository.save(oCalificacionEntity);
         }
 
-        throw new UnauthorizedAccessException("No tienes permisos para crear calificaciones ");
+        throw new UnauthorizedAccessException("No tienes permisos para crear calificaciones.");
     }
 
     // Actualizar
